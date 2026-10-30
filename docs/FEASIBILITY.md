@@ -9,7 +9,7 @@ Google Photorealistic 3D Tiles were off. No `VITE_GOOGLE_MAPS_KEY` was set, so t
 | Piece | On disk | Transferred |
 | --- | --- | --- |
 | `Cesium.js` | 6.1 MB | Most of the first load, same as before (gzip around 1.8 MB). |
-| App JS | 123 KB | About 22 KB gzip. |
+| App JS | 39 KB | About 13 KB gzip. Benchmark records are fetched separately, not bundled. |
 | App CSS | 29 KB | About 7 KB gzip. |
 | Near field, `study-area-footprints.json` | 944 KB | 156 KB. 1,764 full footprint rings. |
 | Benchmark mesh, `benchmark-massing.json` | 120 KB | 14 KB. CityGML surfaces for 15 William, 1 Wall, and 220 Water. |

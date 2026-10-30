@@ -5,9 +5,12 @@
   "description": "Explore individual rental and condo units in a 3D downtown Manhattan map, with daylight and views factored in.",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/write-study-footprints.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/write-study-footprints.mjs",
     "build": "tsc --noEmit && vite build && node scripts/fix-cesium-base.mjs",
     "preview": "vite preview --host 127.0.0.1",
+    "pretest": "node scripts/write-study-footprints.mjs",
     "test": "vitest run",
     "compile-data": "node scripts/compile-data.mjs",
     "data": "node scripts/fetch-open-data.mjs && node scripts/compile-data.mjs",

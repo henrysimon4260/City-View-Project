@@ -1,16 +1,14 @@
-export interface ListingSource {
-  id: string;
-  name: string;
-  kind: "open-data" | "geocoder" | "publisher-page" | "listing-site";
-  enabled: boolean;
-  reason: string;
-}
-
 /**
- * Runtime catalog of the listings pipeline. Enabled sources are the ones
- * `scripts/fetch-open-data.mjs` is allowed to call. Listing sites stay off.
+ * @typedef {Object} ListingSource
+ * @property {string} id
+ * @property {string} name
+ * @property {"open-data" | "geocoder" | "publisher-page" | "listing-site"} kind
+ * @property {boolean} enabled
+ * @property {string} reason
  */
-export const LISTING_SOURCES: ListingSource[] = [
+
+/** @type {ListingSource[]} */
+export const LISTING_SOURCES = [
   {
     id: "pluto",
     name: "NYC PLUTO",
@@ -83,6 +81,6 @@ export const LISTING_SOURCES: ListingSource[] = [
   },
 ];
 
-export function enabledListingSources(): ListingSource[] {
+export function enabledListingSources() {
   return LISTING_SOURCES.filter((source) => source.enabled);
 }

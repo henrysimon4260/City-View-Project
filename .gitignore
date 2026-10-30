@@ -1,4 +1,5 @@
 node_modules/
+public/data/study-area-footprints.json
 dist/
 .env
 .env.local
