@@ -1,0 +1,106 @@
+[
+  {
+    "buildingId": "130-william",
+    "publisher": "Adjaye Associates",
+    "url": "https://www.adjaye.com/work/130-william-2/",
+    "retrieved": "2026-10-30",
+    "access": "Project page retrieved once. robots.txt allows User-agent: * with Crawl-delay: 10. Floor plans were not requested.",
+    "claims": [
+      {
+        "field": "stories",
+        "value": "66",
+        "quote": "Rising 800 feet, the 66-story luxury condominium"
+      },
+      {
+        "field": "heightFeet",
+        "value": "800",
+        "quote": "Rising 800 feet, the 66-story luxury condominium"
+      },
+      {
+        "field": "residences",
+        "value": "242",
+        "quote": "130 William’s program includes 242 residences"
+      },
+      {
+        "field": "areaFt2",
+        "value": "450000",
+        "quote": "Area 41,500 m² / 450,000 ft²"
+      }
+    ]
+  },
+  {
+    "buildingId": "1-wall",
+    "publisher": "SLCE Architects",
+    "url": "https://www.slcearch.com/project/one-wall-street/",
+    "retrieved": "2026-10-30",
+    "access": "Project page retrieved once. robots.txt allows User-agent: * with Crawl-delay: 20. Floor plans were not requested.",
+    "claims": [
+      {
+        "field": "stories",
+        "value": "51",
+        "quote": "Scale 51 Stories, 566 Units"
+      },
+      {
+        "field": "units",
+        "value": "566",
+        "quote": "Scale 51 Stories, 566 Units"
+      }
+    ],
+    "note": "The same page still said Status In-Progress on 2026-10-30. DOB NOW certificates for this BIN were already issued; that page status is not used."
+  },
+  {
+    "buildingId": "15-william",
+    "sourceId": "wiki-15-william",
+    "publisher": "Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/15_William",
+    "retrieved": "2026-10-30",
+    "access": "Wikipedia API wikitext. CC BY-SA 4.0. Infobox and lead sentence only.",
+    "claims": [
+      {
+        "field": "stories",
+        "value": "47",
+        "quote": "floor_count = 47"
+      }
+    ]
+  },
+  {
+    "buildingId": "1-wall",
+    "sourceId": "wiki-1-wall",
+    "publisher": "Wikipedia",
+    "url": "https://en.wikipedia.org/wiki/1_Wall_Street",
+    "retrieved": "2026-10-30",
+    "access": "Wikipedia API wikitext. CC BY-SA 4.0. The top_floor value of 52 is the PLUTO count and is described as including two dormer floors.",
+    "claims": [
+      {
+        "field": "stories",
+        "value": "50",
+        "quote": "floor_count = 50. The official figure of 50 floors excludes two extra dormer floors on the roof. top_floor = 52"
+      },
+      {
+        "field": "heightFeet",
+        "value": "654",
+        "quote": "roof = 654 ft"
+      }
+    ]
+  },
+  {
+    "buildingId": "7-dey",
+    "sourceId": "osm-simple3d",
+    "publisher": "OpenStreetMap",
+    "url": "https://www.openstreetmap.org/way/1126100205",
+    "retrieved": "2026-10-30",
+    "access": "OSM API map extract. ODbL 1.0. Way 1126100205 is the outline inside the city footprint. It has no source:height tag.",
+    "claims": [
+      {
+        "field": "stories",
+        "value": "24",
+        "quote": "building:levels=24 on way 1126100205"
+      },
+      {
+        "field": "heightFeet",
+        "value": "403.5",
+        "quote": "height=123 on way 1126100205, converted at 0.3048 m per foot"
+      }
+    ]
+  }
+]

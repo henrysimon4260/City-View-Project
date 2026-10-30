@@ -1,0 +1,4629 @@
+{
+  "retrieved": "2026-10-30",
+  "plutoVersion": "26v2",
+  "padVersion": "26c",
+  "citations": [
+    {
+      "id": "pluto",
+      "title": "Primary Land Use Tax Lot Output (PLUTO), version 26v2",
+      "publisher": "NYC Department of City Planning, via NYC Open Data",
+      "url": "https://data.cityofnewyork.us/City-Government/Primary-Land-Use-Tax-Lot-Output-PLUTO-/64uk-42ks",
+      "retrieved": "2026-10-30",
+      "note": "SODA dataset 64uk-42ks. The five billing-lot rows are archived in data/cache/pluto.json."
+    },
+    {
+      "id": "footprints",
+      "title": "BUILDING (NYC building footprints)",
+      "publisher": "NYC Office of Technology and Innovation, via NYC Open Data",
+      "url": "https://data.cityofnewyork.us/City-Government/BUILDING/5zhs-2jue",
+      "retrieved": "2026-10-30",
+      "note": "SODA dataset 5zhs-2jue. Benchmark geometries are archived in data/cache/footprints.json. height_roof is feet above ground, not above sea level."
+    },
+    {
+      "id": "footprints-metadata",
+      "title": "Building Footprints metadata",
+      "publisher": "NYC Office of Technology and Innovation",
+      "url": "https://github.com/CityOfNewYork/nyc-geo-metadata/blob/master/Metadata/Metadata_BuildingFootprints.md",
+      "retrieved": "2026-10-30",
+      "note": "Defines HEIGHT_ROOF, GROUND_ELEVATION, and FEATURE_CODE. Metadata date on that page: 2025-10-09."
+    },
+    {
+      "id": "dob-legacy-co",
+      "title": "DOB Certificate of Occupancy",
+      "publisher": "NYC Department of Buildings, via NYC Open Data",
+      "url": "https://data.cityofnewyork.us/Housing-Development/DOB-Certificate-Of-Occupancy/bs8b-p36w",
+      "retrieved": "2026-10-30",
+      "note": "SODA dataset bs8b-p36w. Issuance rows only; this extract has no floor-by-floor occupancy schedule and no dwelling-unit column."
+    },
+    {
+      "id": "dob-now-co",
+      "title": "DOB NOW: Certificate of Occupancy",
+      "publisher": "NYC Department of Buildings, via NYC Open Data",
+      "url": "https://data.cityofnewyork.us/Housing-Development/DOB-NOW-Certificate-of-Occupancy/pkdm-hqz6",
+      "retrieved": "2026-10-30",
+      "note": "SODA dataset pkdm-hqz6. Includes number_of_dwelling_units. It does not include unit lines or floor-plan geometry."
+    },
+    {
+      "id": "pad-geosearch",
+      "title": "NYC Planning GeoSearch (PAD 26c)",
+      "publisher": "NYC Department of City Planning, Planning Labs",
+      "url": "https://geosearch.planninglabs.nyc/",
+      "retrieved": "2026-10-30",
+      "note": "Address-to-BIN/BBL matches. The PAD SODA table bc8t-ecyu returned 403 (non-tabular) on this retrieval, so the GeoSearch response is the PAD record used here. Version string in the responses: 26c."
+    },
+    {
+      "id": "adjaye-130",
+      "title": "130 William project page",
+      "publisher": "Adjaye Associates",
+      "url": "https://www.adjaye.com/work/130-william-2/",
+      "retrieved": "2026-10-30",
+      "note": "Single project page. robots.txt allows User-agent: * with Crawl-delay: 10. Not a floor plan. Figures that disagree with city measurements are not used in the model."
+    },
+    {
+      "id": "slce-1-wall",
+      "title": "One Wall Street project page",
+      "publisher": "SLCE Architects",
+      "url": "https://www.slcearch.com/project/one-wall-street/",
+      "retrieved": "2026-10-30",
+      "note": "Single project page. robots.txt allows User-agent: * with Crawl-delay: 20. Not a floor plan. The page still said Status In-Progress on retrieval."
+    },
+    {
+      "id": "listings-policy",
+      "title": "Listing-site access decision",
+      "publisher": "City View Project",
+      "url": "https://github.com/henrysimon4260/City-View-Project/blob/main/docs/DATA.md",
+      "retrieved": "2026-10-30",
+      "note": "StreetEasy robots.txt disallows /building/*/floorplans, /sale/*, and /rental/*. Zillow's terms restrict automated access. Compass was not given an official open API in this pipeline. No listing-site pages were fetched."
+    },
+    {
+      "id": "nyc-3d-citygml",
+      "title": "NYC 3D Building Model (CityGML)",
+      "publisher": "NYC Office of Technology and Innovation, distributed by NYC Open Data",
+      "url": "https://maps.nyc.gov/download/3dmodel/DA_WISE_GML.zip",
+      "retrieved": "2026-10-30",
+      "note": "DA_WISE_GMLs/DA12_3D_Buildings_Merged.gml from the 2016 CityGML zip. The model is the 2014 aerial survey. License: NYC Open Data terms, https://www.nyc.gov/home/terms-of-use.page. Roof and wall surfaces are copied. The model has no floor plates. 130 William and 7 Dey are absent because they were built later."
+    },
+    {
+      "id": "wiki-15-william",
+      "title": "15 William",
+      "publisher": "Wikipedia, CC BY-SA 4.0",
+      "url": "https://en.wikipedia.org/wiki/15_William",
+      "retrieved": "2026-10-30",
+      "note": "Infobox floor_count 47 and roof 528 ft. The roof matches the city height. The story count does not. Short quoted facts only."
+    },
+    {
+      "id": "wiki-1-wall",
+      "title": "1 Wall Street",
+      "publisher": "Wikipedia, CC BY-SA 4.0",
+      "url": "https://en.wikipedia.org/wiki/1_Wall_Street",
+      "retrieved": "2026-10-30",
+      "note": "Infobox floor_count 50, top_floor 52, roof 654 ft. The article says the official count of 50 excludes two dormer floors. PLUTO numfloors is 52."
+    },
+    {
+      "id": "wiki-landmarks",
+      "title": "Landmark coordinates",
+      "publisher": "Wikipedia primary coordinates, CC BY-SA 4.0",
+      "url": "https://en.wikipedia.org/wiki/One_World_Trade_Center",
+      "retrieved": "2026-10-30",
+      "note": "Primary coordinates retrieved from the Wikipedia API for the Statue of Liberty, One World Trade Center, and the Brooklyn Bridge. One WTC and Liberty Island angles use the nearby city footprint roof, not a new mesh."
+    },
+    {
+      "id": "osm-simple3d",
+      "title": "OpenStreetMap building ways, Jersey City waterfront and Lower Manhattan tags",
+      "publisher": "OpenStreetMap contributors, ODbL 1.0",
+      "url": "https://www.openstreetmap.org/copyright",
+      "retrieved": "2026-10-30",
+      "note": "Jersey City ways with a height tag are simplified far-field extrusions. OSM has no Jersey City ground elevation, so those bases sit at 0 in the same feet-as-ellipsoid frame as the NYC footprints. Buildings without a height tag are omitted. Google Street View was not scraped."
+    },
+    {
+      "id": "google-3d-tiles",
+      "title": "Photorealistic 3D Tiles",
+      "publisher": "Google Maps Platform, Map Tiles API",
+      "url": "https://developers.google.com/maps/documentation/tile/3d-tiles",
+      "retrieved": "2026-10-30",
+      "note": "Streamed in Cesium only when VITE_GOOGLE_MAPS_KEY is set. Tiles are not copied into the repository. The headless check ran without a key, so that tier was off."
+    },
+    {
+      "id": "lidar-3dep",
+      "title": "USGS 3DEP elevation image service",
+      "publisher": "U.S. Geological Survey, public domain",
+      "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+      "retrieved": "2026-10-30",
+      "note": "An identify request at 1 Wall Street returned NoData. The NYC 2017 topobathymetric point cloud was not downloaded. Near-field heights in this build are footprint height_roof and the 2014 CityGML mesh, not a new lidar sample."
+    }
+  ],
+  "datasetNotes": [
+    "Story count and roof height are city fields. Roof height is not divided into equal floors. A floor is drawn only when its elevation is archived. None of the five buildings has a measured window-row elevation in this archive, so every floor is unverified and grey.",
+    "15 William, 1 Wall Street, and 220 Water Street use the 2014 NYC CityGML mesh (setbacks and crowns). 130 William and 7 Dey were built later and are the city footprint at height_roof. 7 Dey's cantilever is still one ring because the underside elevation was not found.",
+    "Near field is every footprint in the study extract (1764 buildings), about a half mile around the benchmarks, at the city roof height, drawn grey. Far field is 968 simplified stand-ins (911 NYC footprints, 47 OpenStreetMap Jersey City buildings with a height tag, 10 Liberty Island footprints).",
+    "Outward views use a 60° horizontal field of view. The illustrative harbor skybox is not used. Google Photorealistic 3D Tiles load only with VITE_GOOGLE_MAPS_KEY and were not on for the headless check.",
+    "Absolute height above the WGS84 ellipsoid is an estimate: ground_elevation and height_roof, converted with 0.3048 meters per foot, with no NAVD88 geoid separation applied. The USGS 3DEP identify call at 1 Wall Street returned NoData, so 2017 lidar was not sampled into new heights.",
+    "StreetEasy, Zillow, and Compass were not crawled. Google Street View was not scraped. No active listing, rent, or sale price is shown."
+  ],
+  "buildings": [
+    {
+      "id": "15-william",
+      "name": "15 William Street",
+      "bin": "1087954",
+      "bbl": "1000257501",
+      "footprintRings": [
+        [
+          [
+            -74.0106652,
+            40.7052217
+          ],
+          [
+            -74.0106664,
+            40.7052269
+          ],
+          [
+            -74.0106948,
+            40.7053428
+          ],
+          [
+            -74.0107008,
+            40.7053673
+          ],
+          [
+            -74.0107136,
+            40.7054193
+          ],
+          [
+            -74.0106385,
+            40.70543
+          ],
+          [
+            -74.0106693,
+            40.7055558
+          ],
+          [
+            -74.0106329,
+            40.7055577
+          ],
+          [
+            -74.0106318,
+            40.7055578
+          ],
+          [
+            -74.0103869,
+            40.7055772
+          ],
+          [
+            -74.0103006,
+            40.7055801
+          ],
+          [
+            -74.0101133,
+            40.7055865
+          ],
+          [
+            -74.0100904,
+            40.7055873
+          ],
+          [
+            -74.0100787,
+            40.7055877
+          ],
+          [
+            -74.0100686,
+            40.7055881
+          ],
+          [
+            -74.0100602,
+            40.7055883
+          ],
+          [
+            -74.0100526,
+            40.7055886
+          ],
+          [
+            -74.0100126,
+            40.70559
+          ],
+          [
+            -74.0100015,
+            40.7055904
+          ],
+          [
+            -74.0100537,
+            40.705446
+          ],
+          [
+            -74.0100783,
+            40.7053776
+          ],
+          [
+            -74.0101437,
+            40.705226
+          ],
+          [
+            -74.0102062,
+            40.7052623
+          ],
+          [
+            -74.0103021,
+            40.7052461
+          ],
+          [
+            -74.010289,
+            40.7051974
+          ],
+          [
+            -74.0103601,
+            40.7051868
+          ],
+          [
+            -74.0105536,
+            40.7051661
+          ],
+          [
+            -74.0105604,
+            40.7052221
+          ],
+          [
+            -74.0106652,
+            40.7052217
+          ]
+        ]
+      ],
+      "centroid": [
+        -74.0103474,
+        40.7054241
+      ],
+      "addresses": [
+        {
+          "text": "15 WILLIAM STREET",
+          "roles": [
+            "PLUTO tax-lot address",
+            "PAD address point (GeoSearch, PAD 26c)",
+            "Legacy DOB certificate address"
+          ],
+          "status": "confirmed",
+          "sources": [
+            "pluto",
+            "pad-geosearch",
+            "dob-legacy-co"
+          ]
+        }
+      ],
+      "stories": {
+        "value": 44,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO numfloors on the condominium billing lot."
+      },
+      "heightRoofFt": {
+        "value": 528.04837283,
+        "status": "confirmed",
+        "sources": [
+          "footprints",
+          "footprints-metadata"
+        ],
+        "note": "height_roof, feet above ground elevation, not above sea level."
+      },
+      "groundElevationFt": {
+        "value": 11,
+        "status": "confirmed",
+        "sources": [
+          "footprints",
+          "footprints-metadata"
+        ],
+        "note": "ground_elevation, feet. City metadata: lowest ground elevation at the building, NAVD88 when the source supports it. Placing that number on the WGS84 ellipsoid without a geoid model is an estimated absolute altitude."
+      },
+      "residentialUnits": {
+        "value": 320,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO unitsres. Not a floor-by-floor count."
+      },
+      "totalUnits": {
+        "value": 322,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO unitstotal, including non-residential units on the lot."
+      },
+      "dwellingUnitsOnCertificate": {
+        "value": null,
+        "status": "unverified",
+        "sources": [
+          "dob-legacy-co"
+        ],
+        "note": "No dwelling-unit number was published in the certificate rows retrieved for this BIN."
+      },
+      "yearBuilt": {
+        "value": 2005,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO yearbuilt."
+      },
+      "constructionYear": {
+        "value": 2005,
+        "status": "confirmed",
+        "sources": [
+          "footprints"
+        ],
+        "note": "Footprint construction_year."
+      },
+      "yearAltered": {
+        "value": null,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO yearalter1 is 0 in this extract, which records no alteration year in that field."
+      },
+      "buildingClass": {
+        "value": "RM",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO bldgclass code, stored as published."
+      },
+      "landUseCode": {
+        "value": "4",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO landuse code, stored as published."
+      },
+      "zoning": {
+        "value": "C5-5",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO zonedist1."
+      },
+      "landmark": {
+        "value": null,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "The PLUTO row has no landmark value. Socrata omitted the empty field. This is not a Landmarks designation search beyond that column."
+      },
+      "historicDistrict": {
+        "value": null,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "The PLUTO row has no histdist value. Socrata omitted the empty field."
+      },
+      "featureCode": {
+        "value": 2100,
+        "status": "confirmed",
+        "sources": [
+          "footprints",
+          "footprints-metadata"
+        ],
+        "note": "Building"
+      },
+      "buildingAreaSqft": {
+        "value": 374614,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO bldgarea, square feet."
+      },
+      "residentialAreaSqft": {
+        "value": 322193,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO resarea, square feet."
+      },
+      "commercialAreaSqft": {
+        "value": 52421,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO comarea, square feet."
+      },
+      "lotAreaSqft": {
+        "value": 23649,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO lotarea, square feet."
+      },
+      "zipCode": {
+        "value": "10004",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO zipcode."
+      },
+      "ownerName": {
+        "value": "15 WILLIAM STREET CONDOMINIUM",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO ownername on the billing lot."
+      },
+      "certificate": {
+        "value": "Legacy DOB certificate dataset final issue date 2015-06-03 (job 103838929, item 036). That dataset does not publish a dwelling-unit count. Neither certificate dataset includes unit lines or a floor-plan drawing.",
+        "status": "confirmed",
+        "sources": [
+          "dob-legacy-co"
+        ]
+      },
+      "unitLines": [],
+      "floors": [
+        {
+          "number": 1,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 2,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 3,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 4,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 5,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 6,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 7,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 8,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 9,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 10,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 11,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 12,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 13,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 14,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 15,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 16,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 17,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 18,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 19,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 20,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 21,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 22,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 23,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 24,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 25,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 26,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 27,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 28,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 29,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 30,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 31,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 32,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 33,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 34,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 35,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 36,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 37,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 38,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 39,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 40,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 41,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 42,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 43,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 44,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        }
+      ],
+      "massing": {
+        "kind": "citygml",
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ],
+        "note": "NYC 3D model mesh, 2014 aerial survey, 12 horizontal roof surfaces. Those surfaces are setbacks and crowns, not floor plates."
+      },
+      "conflicts": [
+        {
+          "field": "stories",
+          "modelValue": "44 (PLUTO numfloors)",
+          "otherValue": "47",
+          "status": "unverified",
+          "sources": [
+            "wiki-15-william"
+          ],
+          "note": "Wikipedia says “floor_count = 47”. The 3D model uses the PLUTO story count. The published figure is not used."
+        }
+      ],
+      "corroboration": [],
+      "notes": [
+        "No per-unit footprint, line letter, or floor-plan coordinate was present in the sources archived for this building. unitLines is empty on purpose.",
+        "Floor elevations are not an even split of roof height. No window-row measurement was reliable enough to publish: street-level photos are cropped and foreshortened, and a luminance pass on the distant 15 William photograph did not lock one peak to each floor. Every ordinal floor is unverified and is not drawn."
+      ]
+    },
+    {
+      "id": "130-william",
+      "name": "130 William Street",
+      "bin": "1090562",
+      "bbl": "1000777501",
+      "footprintRings": [
+        [
+          [
+            -74.006591,
+            40.7090401
+          ],
+          [
+            -74.0064374,
+            40.7092124
+          ],
+          [
+            -74.0063088,
+            40.7091456
+          ],
+          [
+            -74.0061454,
+            40.7093278
+          ],
+          [
+            -74.0059368,
+            40.7092195
+          ],
+          [
+            -74.0062985,
+            40.708889
+          ],
+          [
+            -74.006591,
+            40.7090401
+          ]
+        ]
+      ],
+      "centroid": [
+        -74.0062863,
+        40.7091391
+      ],
+      "addresses": [
+        {
+          "text": "130 WILLIAM STREET",
+          "roles": [
+            "PLUTO tax-lot address",
+            "PAD address point (GeoSearch, PAD 26c)",
+            "DOB NOW certificate address",
+            "Legacy DOB certificate address"
+          ],
+          "status": "confirmed",
+          "sources": [
+            "pluto",
+            "pad-geosearch",
+            "dob-now-co",
+            "dob-legacy-co"
+          ]
+        }
+      ],
+      "stories": {
+        "value": 61,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO numfloors on the condominium billing lot."
+      },
+      "heightRoofFt": {
+        "value": 750,
+        "status": "confirmed",
+        "sources": [
+          "footprints",
+          "footprints-metadata"
+        ],
+        "note": "height_roof, feet above ground elevation, not above sea level."
+      },
+      "groundElevationFt": {
+        "value": 27,
+        "status": "confirmed",
+        "sources": [
+          "footprints",
+          "footprints-metadata"
+        ],
+        "note": "ground_elevation, feet. City metadata: lowest ground elevation at the building, NAVD88 when the source supports it. Placing that number on the WGS84 ellipsoid without a geoid model is an estimated absolute altitude."
+      },
+      "residentialUnits": {
+        "value": 240,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO unitsres. Not a floor-by-floor count."
+      },
+      "totalUnits": {
+        "value": 306,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO unitstotal, including non-residential units on the lot."
+      },
+      "dwellingUnitsOnCertificate": {
+        "value": 241,
+        "status": "confirmed",
+        "sources": [
+          "dob-now-co"
+        ],
+        "note": "number_of_dwelling_units on the DOB NOW certificate rows for this BIN. This is a building total, not a per-floor or per-line count."
+      },
+      "yearBuilt": {
+        "value": 2017,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO yearbuilt."
+      },
+      "constructionYear": {
+        "value": 2019,
+        "status": "confirmed",
+        "sources": [
+          "footprints"
+        ],
+        "note": "Footprint construction_year."
+      },
+      "yearAltered": {
+        "value": null,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO yearalter1 is 0 in this extract, which records no alteration year in that field."
+      },
+      "buildingClass": {
+        "value": "RM",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO bldgclass code, stored as published."
+      },
+      "landUseCode": {
+        "value": "4",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO landuse code, stored as published."
+      },
+      "zoning": {
+        "value": "C6-4",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO zonedist1."
+      },
+      "landmark": {
+        "value": null,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "The PLUTO row has no landmark value. Socrata omitted the empty field. This is not a Landmarks designation search beyond that column."
+      },
+      "historicDistrict": {
+        "value": null,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "The PLUTO row has no histdist value. Socrata omitted the empty field."
+      },
+      "featureCode": {
+        "value": 2100,
+        "status": "confirmed",
+        "sources": [
+          "footprints",
+          "footprints-metadata"
+        ],
+        "note": "Building"
+      },
+      "buildingAreaSqft": {
+        "value": 332498,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO bldgarea, square feet."
+      },
+      "residentialAreaSqft": {
+        "value": 309916,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO resarea, square feet."
+      },
+      "commercialAreaSqft": {
+        "value": 22582,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO comarea, square feet."
+      },
+      "lotAreaSqft": {
+        "value": 17384,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO lotarea, square feet."
+      },
+      "zipCode": {
+        "value": "10038",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO zipcode."
+      },
+      "ownerName": {
+        "value": "130 WILLIAM STREET ASSOCIATES LLC",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO ownername on the billing lot."
+      },
+      "certificate": {
+        "value": "DOB NOW final certificate issued 2025-10-20 (1090562-0000020, job 121192903) records 241 dwelling units. Every DOB NOW row in this extract for the BIN lists 241 dwelling units. Legacy DOB certificate dataset final issue date 2025-10-20 (job 121192903, item 004). That dataset does not publish a dwelling-unit count. Neither certificate dataset includes unit lines or a floor-plan drawing.",
+        "status": "confirmed",
+        "sources": [
+          "dob-now-co",
+          "dob-legacy-co"
+        ]
+      },
+      "unitLines": [],
+      "floors": [
+        {
+          "number": 1,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 2,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 3,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 4,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 5,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 6,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 7,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 8,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 9,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 10,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 11,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 12,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 13,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 14,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 15,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 16,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 17,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 18,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 19,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 20,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 21,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 22,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 23,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 24,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 25,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 26,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 27,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 28,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 29,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 30,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 31,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 32,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 33,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 34,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 35,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 36,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 37,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 38,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 39,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 40,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 41,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 42,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 43,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 44,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 45,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 46,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 47,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 48,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 49,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 50,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 51,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 52,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 53,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 54,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 55,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 56,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 57,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 58,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 59,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 60,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 61,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        }
+      ],
+      "massing": {
+        "kind": "footprint-envelope",
+        "status": "confirmed",
+        "sources": [
+          "footprints",
+          "nyc-3d-citygml"
+        ],
+        "note": "The 2014 CityGML does not include this building. Setbacks and the crown are not in the archived mesh, so they are not drawn. The block is the city footprint extruded to height_roof."
+      },
+      "conflicts": [
+        {
+          "field": "stories",
+          "modelValue": "61 (PLUTO numfloors)",
+          "otherValue": "66",
+          "status": "unverified",
+          "sources": [
+            "adjaye-130"
+          ],
+          "note": "Adjaye Associates says “Rising 800 feet, the 66-story luxury condominium”. The 3D model uses the PLUTO story count. The published figure is not used."
+        },
+        {
+          "field": "heightRoofFt",
+          "modelValue": "750 ft (NYC building footprints height_roof)",
+          "otherValue": "800 ft",
+          "status": "unverified",
+          "sources": [
+            "adjaye-130"
+          ],
+          "note": "Adjaye Associates says “Rising 800 feet, the 66-story luxury condominium”. The extrusion uses the city roof height. The published figure is not used."
+        },
+        {
+          "field": "residences",
+          "modelValue": "240 residential units (PLUTO unitsres); 241 dwelling units (DOB NOW CO)",
+          "otherValue": "242",
+          "status": "unverified",
+          "sources": [
+            "adjaye-130"
+          ],
+          "note": "Adjaye Associates says “130 William’s program includes 242 residences”. Not used for a unit count or a floor plan."
+        },
+        {
+          "field": "buildingAreaSqft",
+          "modelValue": "332498 sq ft (PLUTO bldgarea)",
+          "otherValue": "450000 sq ft",
+          "status": "unverified",
+          "sources": [
+            "adjaye-130"
+          ],
+          "note": "Adjaye Associates says “Area 41,500 m² / 450,000 ft²”. The model does not use gross area. The city area is what the record stores."
+        }
+      ],
+      "corroboration": [],
+      "notes": [
+        "PLUTO yearbuilt is 2017 and the footprint construction_year is 2019. Both are kept. They are different city fields, not one completion date.",
+        "PLUTO unitsres is 240 and DOB NOW number_of_dwelling_units is 241. Both city figures are kept. They are not averaged.",
+        "No per-unit footprint, line letter, or floor-plan coordinate was present in the sources archived for this building. unitLines is empty on purpose.",
+        "Floor elevations are not an even split of roof height. No window-row measurement was reliable enough to publish: street-level photos are cropped and foreshortened, and a luminance pass on the distant 15 William photograph did not lock one peak to each floor. Every ordinal floor is unverified and is not drawn."
+      ]
+    },
+    {
+      "id": "1-wall",
+      "name": "1 Wall Street",
+      "bin": "1000815",
+      "bbl": "1000237501",
+      "footprintRings": [
+        [
+          [
+            -74.0118591,
+            40.7067216
+          ],
+          [
+            -74.011895,
+            40.7066655
+          ],
+          [
+            -74.0119384,
+            40.7066842
+          ],
+          [
+            -74.0119994,
+            40.7067105
+          ],
+          [
+            -74.0120612,
+            40.7067372
+          ],
+          [
+            -74.0121243,
+            40.7067645
+          ],
+          [
+            -74.0122027,
+            40.7067983
+          ],
+          [
+            -74.0122481,
+            40.7068179
+          ],
+          [
+            -74.0121874,
+            40.706892
+          ],
+          [
+            -74.0121854,
+            40.7068945
+          ],
+          [
+            -74.0121245,
+            40.7069689
+          ],
+          [
+            -74.0119317,
+            40.7072044
+          ],
+          [
+            -74.0119449,
+            40.7072107
+          ],
+          [
+            -74.0119788,
+            40.7072267
+          ],
+          [
+            -74.0118439,
+            40.7073915
+          ],
+          [
+            -74.0117607,
+            40.7074932
+          ],
+          [
+            -74.0116581,
+            40.7076185
+          ],
+          [
+            -74.0116102,
+            40.7076266
+          ],
+          [
+            -74.0115834,
+            40.707617
+          ],
+          [
+            -74.0115798,
+            40.7076157
+          ],
+          [
+            -74.0115209,
+            40.7075944
+          ],
+          [
+            -74.0114584,
+            40.7075648
+          ],
+          [
+            -74.0114194,
+            40.7075421
+          ],
+          [
+            -74.0113657,
+            40.7075108
+          ],
+          [
+            -74.0113644,
+            40.7074944
+          ],
+          [
+            -74.0113632,
+            40.7074786
+          ],
+          [
+            -74.0113906,
+            40.7074376
+          ],
+          [
+            -74.0115325,
+            40.7072253
+          ],
+          [
+            -74.0116353,
+            40.7070716
+          ],
+          [
+            -74.011652,
+            40.7070453
+          ],
+          [
+            -74.0117623,
+            40.706873
+          ],
+          [
+            -74.0118591,
+            40.7067216
+          ]
+        ]
+      ],
+      "centroid": [
+        -74.0117801,
+        40.7071773
+      ],
+      "addresses": [
+        {
+          "text": "1 WALL STREET",
+          "roles": [
+            "PLUTO tax-lot address",
+            "PAD address point (GeoSearch, PAD 26c)",
+            "DOB NOW certificate address"
+          ],
+          "status": "confirmed",
+          "sources": [
+            "pluto",
+            "pad-geosearch",
+            "dob-now-co"
+          ]
+        },
+        {
+          "text": "60 BROADWAY",
+          "roles": [
+            "DOB NOW certificate address"
+          ],
+          "status": "confirmed",
+          "sources": [
+            "dob-now-co"
+          ]
+        }
+      ],
+      "stories": {
+        "value": 52,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO numfloors on the condominium billing lot."
+      },
+      "heightRoofFt": {
+        "value": 657.87,
+        "status": "confirmed",
+        "sources": [
+          "footprints",
+          "footprints-metadata"
+        ],
+        "note": "height_roof, feet above ground elevation, not above sea level."
+      },
+      "groundElevationFt": {
+        "value": 29,
+        "status": "confirmed",
+        "sources": [
+          "footprints",
+          "footprints-metadata"
+        ],
+        "note": "ground_elevation, feet. City metadata: lowest ground elevation at the building, NAVD88 when the source supports it. Placing that number on the WGS84 ellipsoid without a geoid model is an estimated absolute altitude."
+      },
+      "residentialUnits": {
+        "value": 566,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO unitsres. Not a floor-by-floor count."
+      },
+      "totalUnits": {
+        "value": 569,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO unitstotal, including non-residential units on the lot."
+      },
+      "dwellingUnitsOnCertificate": {
+        "value": 566,
+        "status": "confirmed",
+        "sources": [
+          "dob-now-co"
+        ],
+        "note": "number_of_dwelling_units on the DOB NOW certificate rows for this BIN. This is a building total, not a per-floor or per-line count."
+      },
+      "yearBuilt": {
+        "value": 1930,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO yearbuilt."
+      },
+      "constructionYear": {
+        "value": 1930,
+        "status": "confirmed",
+        "sources": [
+          "footprints"
+        ],
+        "note": "Footprint construction_year."
+      },
+      "yearAltered": {
+        "value": 2016,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO yearalter1."
+      },
+      "buildingClass": {
+        "value": "RM",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO bldgclass code, stored as published."
+      },
+      "landUseCode": {
+        "value": "4",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO landuse code, stored as published."
+      },
+      "zoning": {
+        "value": "C5-5",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO zonedist1."
+      },
+      "landmark": {
+        "value": "INDIVIDUAL AND INTERIOR LANDMARK",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO landmark field."
+      },
+      "historicDistrict": {
+        "value": null,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "The PLUTO row has no histdist value. Socrata omitted the empty field."
+      },
+      "featureCode": {
+        "value": 2100,
+        "status": "confirmed",
+        "sources": [
+          "footprints",
+          "footprints-metadata"
+        ],
+        "note": "Building"
+      },
+      "buildingAreaSqft": {
+        "value": 885324,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO bldgarea, square feet."
+      },
+      "residentialAreaSqft": {
+        "value": 688382,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO resarea, square feet."
+      },
+      "commercialAreaSqft": {
+        "value": 196942,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO comarea, square feet."
+      },
+      "lotAreaSqft": {
+        "value": 42178,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO lotarea, square feet."
+      },
+      "zipCode": {
+        "value": "10005",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO zipcode."
+      },
+      "ownerName": {
+        "value": "UNAVAILABLE OWNER",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO ownername on the billing lot."
+      },
+      "certificate": {
+        "value": "DOB NOW initial certificate issued 2021-10-29 (1000815-0000001, job 121190086) records 566 dwelling units. Latest DOB NOW row in this extract: 2026-10-19, type Renewal Without Change, 566 dwelling units (1000815-0000031). Every DOB NOW row in this extract for the BIN lists 566 dwelling units. Neither certificate dataset includes unit lines or a floor-plan drawing.",
+        "status": "confirmed",
+        "sources": [
+          "dob-now-co"
+        ]
+      },
+      "unitLines": [],
+      "floors": [
+        {
+          "number": 1,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 2,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 3,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 4,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 5,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 6,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 7,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 8,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 9,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 10,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 11,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 12,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 13,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 14,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 15,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 16,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 17,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 18,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 19,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 20,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 21,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 22,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 23,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 24,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 25,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 26,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 27,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 28,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 29,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 30,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 31,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 32,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 33,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 34,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 35,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 36,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 37,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 38,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 39,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 40,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 41,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 42,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 43,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 44,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 45,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 46,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 47,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 48,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 49,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 50,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 51,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 52,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        }
+      ],
+      "massing": {
+        "kind": "citygml",
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ],
+        "note": "NYC 3D model mesh, 2014 aerial survey, 39 horizontal roof surfaces. Those surfaces are setbacks and crowns, not floor plates."
+      },
+      "conflicts": [
+        {
+          "field": "stories",
+          "modelValue": "52 (PLUTO numfloors)",
+          "otherValue": "51",
+          "status": "unverified",
+          "sources": [
+            "slce-1-wall"
+          ],
+          "note": "SLCE Architects says “Scale 51 Stories, 566 Units”. The 3D model uses the PLUTO story count. The published figure is not used."
+        },
+        {
+          "field": "stories",
+          "modelValue": "52 (PLUTO numfloors)",
+          "otherValue": "50",
+          "status": "unverified",
+          "sources": [
+            "wiki-1-wall"
+          ],
+          "note": "Wikipedia says “floor_count = 50. The official figure of 50 floors excludes two extra dormer floors on the roof. top_floor = 52”. The 3D model uses the PLUTO story count. The published figure is not used."
+        },
+        {
+          "field": "heightRoofFt",
+          "modelValue": "657.87 ft (NYC building footprints height_roof)",
+          "otherValue": "654 ft",
+          "status": "unverified",
+          "sources": [
+            "wiki-1-wall"
+          ],
+          "note": "Wikipedia says “roof = 654 ft”. The extrusion uses the city roof height. The published figure is not used."
+        }
+      ],
+      "corroboration": [
+        {
+          "field": "units",
+          "value": "566",
+          "sources": [
+            "slce-1-wall"
+          ],
+          "note": "SLCE Architects also states 566 (“Scale 51 Stories, 566 Units”). The confirmed count remains the city figure."
+        }
+      ],
+      "notes": [
+        "No per-unit footprint, line letter, or floor-plan coordinate was present in the sources archived for this building. unitLines is empty on purpose.",
+        "Floor elevations are not an even split of roof height. No window-row measurement was reliable enough to publish: street-level photos are cropped and foreshortened, and a luminance pass on the distant 15 William photograph did not lock one peak to each floor. Every ordinal floor is unverified and is not drawn."
+      ]
+    },
+    {
+      "id": "7-dey",
+      "name": "7 Dey Street",
+      "bin": "1090952",
+      "bbl": "1000637501",
+      "footprintRings": [
+        [
+          [
+            -74.009733,
+            40.7103168
+          ],
+          [
+            -74.0098185,
+            40.7102077
+          ],
+          [
+            -74.0102968,
+            40.7104247
+          ],
+          [
+            -74.0101284,
+            40.7106397
+          ],
+          [
+            -74.0099566,
+            40.7105618
+          ],
+          [
+            -74.0099716,
+            40.7105426
+          ],
+          [
+            -74.0099253,
+            40.7105222
+          ],
+          [
+            -74.0099656,
+            40.7104693
+          ],
+          [
+            -74.0098591,
+            40.7104133
+          ],
+          [
+            -74.0098695,
+            40.710402
+          ],
+          [
+            -74.0098049,
+            40.7103677
+          ],
+          [
+            -74.0098089,
+            40.7103641
+          ],
+          [
+            -74.0097453,
+            40.7103326
+          ],
+          [
+            -74.0097521,
+            40.7103255
+          ],
+          [
+            -74.009733,
+            40.7103168
+          ]
+        ]
+      ],
+      "centroid": [
+        -74.0099025,
+        40.7104207
+      ],
+      "addresses": [
+        {
+          "text": "185 BROADWAY",
+          "roles": [
+            "PLUTO tax-lot address",
+            "DOB NOW certificate address"
+          ],
+          "status": "confirmed",
+          "sources": [
+            "pluto",
+            "dob-now-co"
+          ]
+        },
+        {
+          "text": "7 DEY STREET",
+          "roles": [
+            "PAD address point (GeoSearch, PAD 26c)"
+          ],
+          "status": "confirmed",
+          "sources": [
+            "pad-geosearch"
+          ]
+        }
+      ],
+      "stories": {
+        "value": 33,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO numfloors on the condominium billing lot."
+      },
+      "heightRoofFt": {
+        "value": 405,
+        "status": "confirmed",
+        "sources": [
+          "footprints",
+          "footprints-metadata"
+        ],
+        "note": "height_roof, feet above ground elevation, not above sea level."
+      },
+      "groundElevationFt": {
+        "value": 30,
+        "status": "confirmed",
+        "sources": [
+          "footprints",
+          "footprints-metadata"
+        ],
+        "note": "ground_elevation, feet. City metadata: lowest ground elevation at the building, NAVD88 when the source supports it. Placing that number on the WGS84 ellipsoid without a geoid model is an estimated absolute altitude."
+      },
+      "residentialUnits": {
+        "value": 209,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO unitsres. Not a floor-by-floor count."
+      },
+      "totalUnits": {
+        "value": 211,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO unitstotal, including non-residential units on the lot."
+      },
+      "dwellingUnitsOnCertificate": {
+        "value": 209,
+        "status": "confirmed",
+        "sources": [
+          "dob-now-co"
+        ],
+        "note": "number_of_dwelling_units on the DOB NOW certificate rows for this BIN. This is a building total, not a per-floor or per-line count."
+      },
+      "yearBuilt": {
+        "value": 2019,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO yearbuilt."
+      },
+      "constructionYear": {
+        "value": 2021,
+        "status": "confirmed",
+        "sources": [
+          "footprints"
+        ],
+        "note": "Footprint construction_year."
+      },
+      "yearAltered": {
+        "value": 2019,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO yearalter1."
+      },
+      "buildingClass": {
+        "value": "RM",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO bldgclass code, stored as published."
+      },
+      "landUseCode": {
+        "value": "4",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO landuse code, stored as published."
+      },
+      "zoning": {
+        "value": "C5-5",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO zonedist1."
+      },
+      "landmark": {
+        "value": null,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "The PLUTO row has no landmark value. Socrata omitted the empty field. This is not a Landmarks designation search beyond that column."
+      },
+      "historicDistrict": {
+        "value": null,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "The PLUTO row has no histdist value. Socrata omitted the empty field."
+      },
+      "featureCode": {
+        "value": 1006,
+        "status": "confirmed",
+        "sources": [
+          "footprints",
+          "footprints-metadata"
+        ],
+        "note": "Cantilevered Building"
+      },
+      "buildingAreaSqft": {
+        "value": 220695,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO bldgarea, square feet."
+      },
+      "residentialAreaSqft": {
+        "value": 183214,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO resarea, square feet."
+      },
+      "commercialAreaSqft": {
+        "value": 37481,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO comarea, square feet."
+      },
+      "lotAreaSqft": {
+        "value": 2510,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO lotarea, square feet."
+      },
+      "zipCode": {
+        "value": "10007",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO zipcode."
+      },
+      "ownerName": {
+        "value": "183 BROADWAY OWNER LLC",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO ownername on the billing lot."
+      },
+      "certificate": {
+        "value": "DOB NOW initial certificate issued 2021-09-22 (1090952-0000001, job 121188703) records 209 dwelling units. Latest DOB NOW row in this extract: 2026-08-19, type Renewal With Change, 209 dwelling units (1090952-0000022). Every DOB NOW row in this extract for the BIN lists 209 dwelling units. Neither certificate dataset includes unit lines or a floor-plan drawing.",
+        "status": "confirmed",
+        "sources": [
+          "dob-now-co"
+        ]
+      },
+      "unitLines": [],
+      "floors": [
+        {
+          "number": 1,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 2,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 3,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 4,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 5,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 6,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 7,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 8,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 9,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 10,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 11,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 12,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 13,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 14,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 15,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 16,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 17,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 18,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 19,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 20,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 21,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 22,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 23,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 24,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 25,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 26,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 27,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 28,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 29,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 30,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 31,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 32,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 33,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        }
+      ],
+      "massing": {
+        "kind": "footprint-envelope",
+        "status": "confirmed",
+        "sources": [
+          "footprints",
+          "nyc-3d-citygml"
+        ],
+        "note": "The 2014 CityGML does not include this building. The cantilever underside elevation is not in the archive, so the single city ring is kept and a separated cantilever is not invented."
+      },
+      "conflicts": [
+        {
+          "field": "stories",
+          "modelValue": "33 (PLUTO numfloors)",
+          "otherValue": "24",
+          "status": "unverified",
+          "sources": [
+            "osm-simple3d"
+          ],
+          "note": "OpenStreetMap says “building:levels=24 on way 1126100205”. The 3D model uses the PLUTO story count. The published figure is not used."
+        },
+        {
+          "field": "heightRoofFt",
+          "modelValue": "405 ft (NYC building footprints height_roof)",
+          "otherValue": "403.5 ft",
+          "status": "unverified",
+          "sources": [
+            "osm-simple3d"
+          ],
+          "note": "OpenStreetMap says “height=123 on way 1126100205, converted at 0.3048 m per foot”. The extrusion uses the city roof height. The published figure is not used."
+        }
+      ],
+      "corroboration": [],
+      "notes": [
+        "PLUTO yearbuilt is 2019 and the footprint construction_year is 2021. Both are kept. They are different city fields, not one completion date.",
+        "FEATURE_CODE 1006 is a cantilevered building in the city footprint metadata. The file publishes one ring. Extruding that ring does not reconstruct the cantilever.",
+        "PAD lists 7 DEY STREET on BIN 1090952. PLUTO and the DOB NOW certificates for that BIN use 185 BROADWAY.",
+        "No per-unit footprint, line letter, or floor-plan coordinate was present in the sources archived for this building. unitLines is empty on purpose.",
+        "Floor elevations are not an even split of roof height. No window-row measurement was reliable enough to publish: street-level photos are cropped and foreshortened, and a luminance pass on the distant 15 William photograph did not lock one peak to each floor. Every ordinal floor is unverified and is not drawn."
+      ]
+    },
+    {
+      "id": "220-water",
+      "name": "220 Water Street",
+      "bin": "1001292",
+      "bbl": "1000957501",
+      "footprintRings": [
+        [
+          [
+            -74.0032074,
+            40.7076975
+          ],
+          [
+            -74.0034428,
+            40.7075858
+          ],
+          [
+            -74.0034438,
+            40.7075869
+          ],
+          [
+            -74.0035445,
+            40.7076946
+          ],
+          [
+            -74.0035678,
+            40.7077231
+          ],
+          [
+            -74.00356,
+            40.707731
+          ],
+          [
+            -74.0034162,
+            40.7078762
+          ],
+          [
+            -74.0034165,
+            40.7078797
+          ],
+          [
+            -74.0034161,
+            40.7078831
+          ],
+          [
+            -74.0034149,
+            40.7078865
+          ],
+          [
+            -74.0034131,
+            40.7078897
+          ],
+          [
+            -74.0034105,
+            40.7078927
+          ],
+          [
+            -74.0034074,
+            40.7078952
+          ],
+          [
+            -74.0034038,
+            40.7078974
+          ],
+          [
+            -74.0033998,
+            40.7078991
+          ],
+          [
+            -74.0033954,
+            40.7079003
+          ],
+          [
+            -74.0033909,
+            40.7079009
+          ],
+          [
+            -74.0033863,
+            40.707901
+          ],
+          [
+            -74.0033817,
+            40.7079005
+          ],
+          [
+            -74.0033773,
+            40.7078995
+          ],
+          [
+            -74.0033732,
+            40.7078979
+          ],
+          [
+            -74.0033695,
+            40.7078958
+          ],
+          [
+            -74.0033662,
+            40.7078934
+          ],
+          [
+            -74.0033636,
+            40.7078905
+          ],
+          [
+            -74.0033616,
+            40.7078874
+          ],
+          [
+            -74.0033602,
+            40.707884
+          ],
+          [
+            -74.0032198,
+            40.7077126
+          ],
+          [
+            -74.0032093,
+            40.7076998
+          ],
+          [
+            -74.0032074,
+            40.7076975
+          ]
+        ]
+      ],
+      "centroid": [
+        -74.0033936,
+        40.7078315
+      ],
+      "addresses": [
+        {
+          "text": "117 BEEKMAN STREET",
+          "roles": [
+            "PLUTO tax-lot address",
+            "PAD address point (GeoSearch, PAD 26c)"
+          ],
+          "status": "confirmed",
+          "sources": [
+            "pluto",
+            "pad-geosearch"
+          ]
+        },
+        {
+          "text": "220 WATER STREET",
+          "roles": [
+            "PAD address point (GeoSearch, PAD 26c)"
+          ],
+          "status": "confirmed",
+          "sources": [
+            "pad-geosearch"
+          ]
+        }
+      ],
+      "stories": {
+        "value": 7,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO numfloors on the condominium billing lot."
+      },
+      "heightRoofFt": {
+        "value": 104,
+        "status": "confirmed",
+        "sources": [
+          "footprints",
+          "footprints-metadata"
+        ],
+        "note": "height_roof, feet above ground elevation, not above sea level."
+      },
+      "groundElevationFt": {
+        "value": 10,
+        "status": "confirmed",
+        "sources": [
+          "footprints",
+          "footprints-metadata"
+        ],
+        "note": "ground_elevation, feet. City metadata: lowest ground elevation at the building, NAVD88 when the source supports it. Placing that number on the WGS84 ellipsoid without a geoid model is an estimated absolute altitude."
+      },
+      "residentialUnits": {
+        "value": 25,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO unitsres. Not a floor-by-floor count."
+      },
+      "totalUnits": {
+        "value": 26,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO unitstotal, including non-residential units on the lot."
+      },
+      "dwellingUnitsOnCertificate": {
+        "value": null,
+        "status": "unverified",
+        "sources": [
+          "dob-now-co",
+          "dob-legacy-co"
+        ],
+        "note": "No dwelling-unit number was published in the certificate rows retrieved for this BIN."
+      },
+      "yearBuilt": {
+        "value": 1918,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO yearbuilt."
+      },
+      "constructionYear": {
+        "value": 1918,
+        "status": "confirmed",
+        "sources": [
+          "footprints"
+        ],
+        "note": "Footprint construction_year."
+      },
+      "yearAltered": {
+        "value": null,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO yearalter1 is 0 in this extract, which records no alteration year in that field."
+      },
+      "buildingClass": {
+        "value": "RM",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO bldgclass code, stored as published."
+      },
+      "landUseCode": {
+        "value": "4",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO landuse code, stored as published."
+      },
+      "zoning": {
+        "value": "C6-2A",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO zonedist1."
+      },
+      "landmark": {
+        "value": null,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "The PLUTO row has no landmark value. Socrata omitted the empty field. This is not a Landmarks designation search beyond that column."
+      },
+      "historicDistrict": {
+        "value": "South Street Seaport Historic District",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO histdist."
+      },
+      "featureCode": {
+        "value": 2100,
+        "status": "confirmed",
+        "sources": [
+          "footprints",
+          "footprints-metadata"
+        ],
+        "note": "Building"
+      },
+      "buildingAreaSqft": {
+        "value": 31175,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO bldgarea, square feet."
+      },
+      "residentialAreaSqft": {
+        "value": 26775,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO resarea, square feet."
+      },
+      "commercialAreaSqft": {
+        "value": 4400,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO comarea, square feet."
+      },
+      "lotAreaSqft": {
+        "value": 6481,
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO lotarea, square feet."
+      },
+      "zipCode": {
+        "value": "10038",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO zipcode."
+      },
+      "ownerName": {
+        "value": "NAME NOT ON FILE",
+        "status": "confirmed",
+        "sources": [
+          "pluto"
+        ],
+        "note": "PLUTO ownername on the billing lot."
+      },
+      "certificate": {
+        "value": null,
+        "status": "unverified",
+        "sources": [
+          "dob-now-co",
+          "dob-legacy-co"
+        ],
+        "note": "No certificate of occupancy for this BIN in either open dataset on the retrieval date. Those datasets do not contain every older certificate. No floor schedule was available to read."
+      },
+      "unitLines": [],
+      "floors": [
+        {
+          "number": 1,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 2,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 3,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 4,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 5,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 6,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        },
+        {
+          "number": 7,
+          "label": null,
+          "baseFt": null,
+          "topFt": null,
+          "elevationStatus": "unverified",
+          "sources": [
+            "pluto",
+            "dob-now-co",
+            "dob-legacy-co",
+            "nyc-3d-citygml"
+          ],
+          "note": "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn."
+        }
+      ],
+      "massing": {
+        "kind": "citygml",
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ],
+        "note": "NYC 3D model mesh, 2014 aerial survey, 6 horizontal roof surfaces. Those surfaces are setbacks and crowns, not floor plates."
+      },
+      "conflicts": [],
+      "corroboration": [],
+      "notes": [
+        "PAD lists both 220 WATER STREET and 117 BEEKMAN STREET on BIN 1001292 / BBL 1000957501. PLUTO's tax-lot address for that BBL is 117 BEEKMAN STREET.",
+        "No per-unit footprint, line letter, or floor-plan coordinate was present in the sources archived for this building. unitLines is empty on purpose.",
+        "Floor elevations are not an even split of roof height. No window-row measurement was reliable enough to publish: street-level photos are cropped and foreshortened, and a luminance pass on the distant 15 William photograph did not lock one peak to each floor. Every ordinal floor is unverified and is not drawn."
+      ]
+    }
+  ]
+}

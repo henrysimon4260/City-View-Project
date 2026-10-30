@@ -1,0 +1,30 @@
+{
+  "name": "city-view-project",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Explore individual rental and condo units in a 3D downtown Manhattan map, with daylight and views factored in.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build && node scripts/fix-cesium-base.mjs",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run",
+    "compile-data": "node scripts/compile-data.mjs",
+    "data": "node scripts/fetch-open-data.mjs && node scripts/compile-data.mjs",
+    "feasibility": "node scripts/feasibility.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "cesium": "^1.146.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "puppeteer-core": "^25.16.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "vite-plugin-cesium": "^1.2.23",
+    "vitest": "^5.0.5"
+  }
+}
