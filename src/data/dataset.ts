@@ -1,11 +1,12 @@
 import raw from "./benchmarks.json";
 import type { CityDataset } from "../model/types";
-import { assertUnitLines } from "../model/floors";
+import { assertFloors, assertUnitLines } from "../model/floors";
 
 const dataset = raw as unknown as CityDataset;
 
 for (const building of dataset.buildings) {
   assertUnitLines(building.unitLines);
+  assertFloors(building.floors);
 }
 
 export function getDataset(): CityDataset {

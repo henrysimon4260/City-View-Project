@@ -29,6 +29,7 @@ jobs:
         env:
           # Optional. An empty secret is fine: the site uses USGS imagery and NYC footprints.
           VITE_CESIUM_ION_TOKEN: ${{ secrets.CESIUM_ION_TOKEN }}
+          VITE_GOOGLE_MAPS_KEY: ${{ secrets.GOOGLE_MAPS_KEY }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

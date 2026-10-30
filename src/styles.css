@@ -208,6 +208,11 @@ h3 { margin: 0 0 6px; font-size: 14px; }
   padding: 6px 0;
 }
 
+.floors button.is-unverified {
+  background: #d9d6d1;
+  color: #5e584e;
+}
+
 .floors button.is-current {
   background: var(--copper);
   color: white;
@@ -218,7 +223,8 @@ h3 { margin: 0 0 6px; font-size: 14px; }
 .legend li { display: flex; gap: 8px; align-items: center; }
 .swatch { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
 .swatch.shell { background: #d2be9a; }
-.swatch.context { background: #c4bfb4; }
+.swatch.context { background: #8e9399; }
+.swatch.far { background: #6f777f; }
 .swatch.plate { background: #8d8a84; }
 .swatch.limit { background: transparent; border: 2px solid #e0b56a; }
 

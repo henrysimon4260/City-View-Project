@@ -7,7 +7,8 @@ import { getDataset } from "../src/data/dataset";
 import { activateUnit, galleryListenerCount, onUnitActivated } from "../src/gallery/hook";
 import { LISTING_SOURCES } from "../src/listings/sources";
 import { CITY_HALL, containsLonLat } from "../src/model/bounds";
-import { assertUnitLines, graphicsForFloor, stackFloors } from "../src/model/floors";
+import { assertUnitLines, floorLevels, graphicsForFloor } from "../src/model/floors";
+import { horizonDipDegrees, initialBearingDegrees, smallestAngleDegrees } from "../src/model/sightline";
 import type { UnitLine } from "../src/model/types";
 import { exteriorApproach, floorVantage, pointInRing } from "../src/model/viewpoint";
 
@@ -83,17 +84,17 @@ describe("archived city records", () => {
 });
 
 describe("floors and plates", () => {
-  it("stacks estimated floors from ground to the confirmed roof", () => {
+  it("does not invent equal floor heights", () => {
     for (const building of dataset.buildings) {
-      const levels = stackFloors(building);
+      const levels = floorLevels(building);
       expect(levels).toHaveLength(building.stories.value);
       expect(levels[0]?.number).toBe(1);
       expect(levels.at(-1)?.number).toBe(building.stories.value);
-      const ground = building.groundElevationFt.value * 0.3048;
-      const roof = ground + building.heightRoofFt.value * 0.3048;
-      expect(levels[0]?.baseMeters).toBeCloseTo(ground, 6);
-      expect(levels.at(-1)?.topMeters).toBeCloseTo(roof, 6);
-      for (const level of levels) expect(level.elevationStatus).toBe("estimated");
+      for (const level of levels) {
+        expect(level.elevationStatus).toBe("unverified");
+        expect(level.baseMeters).toBeNull();
+        expect(level.topMeters).toBeNull();
+      }
       const plate = graphicsForFloor(building, 3)[0];
       expect(plate?.kind).toBe("unverified-plate");
       if (plate?.kind === "unverified-plate") {
@@ -101,6 +102,21 @@ describe("floors and plates", () => {
         expect(plate.rings).toEqual(building.footprintRings);
       }
     }
+    const mesh = ["15-william", "1-wall", "220-water"];
+    for (const id of mesh) {
+      expect(dataset.buildings.find((building) => building.id === id)?.massing.kind).toBe("citygml");
+    }
+    expect(dataset.buildings.find((building) => building.id === "7-dey")?.massing.kind).toBe("footprint-envelope");
+    expect(dataset.buildings.find((building) => building.id === "130-william")?.massing.kind).toBe("footprint-envelope");
+  });
+
+  it("computes bearings and the ellipsoid horizon", () => {
+    const origin = { longitude: 0, latitude: 0, heightMeters: 0 };
+    expect(initialBearingDegrees(origin, { longitude: 0, latitude: 1, heightMeters: 0 })).toBeCloseTo(0, 5);
+    expect(initialBearingDegrees(origin, { longitude: 1, latitude: 0, heightMeters: 0 })).toBeCloseTo(90, 5);
+    expect(smallestAngleDegrees(350, 10)).toBeCloseTo(20, 5);
+    expect(horizonDipDegrees(200)).toBeGreaterThan(0.4);
+    expect(horizonDipDegrees(200)).toBeLessThan(0.5);
   });
 
   it("refuses an unverified ring and accepts a sourced line range", () => {

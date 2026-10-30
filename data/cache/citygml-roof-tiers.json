@@ -1,0 +1,524 @@
+{
+  "retrieved": "2026-10-30",
+  "buildings": {
+    "15-william": [
+      {
+        "absoluteFt": 36.3,
+        "aboveCityGroundFt": 25.3,
+        "areaSqFt": 5515,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 37.1,
+        "aboveCityGroundFt": 26.1,
+        "areaSqFt": 1018,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 40.0,
+        "aboveCityGroundFt": 29.0,
+        "areaSqFt": 271,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 64.1,
+        "aboveCityGroundFt": 53.1,
+        "areaSqFt": 1230,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 66.4,
+        "aboveCityGroundFt": 55.4,
+        "areaSqFt": 2809,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 500.5,
+        "aboveCityGroundFt": 489.5,
+        "areaSqFt": 697,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 501.0,
+        "aboveCityGroundFt": 490.0,
+        "areaSqFt": 567,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 502.4,
+        "aboveCityGroundFt": 491.4,
+        "areaSqFt": 112,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 515.2,
+        "aboveCityGroundFt": 504.2,
+        "areaSqFt": 3519,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 516.8,
+        "aboveCityGroundFt": 505.8,
+        "areaSqFt": 3201,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 523.4,
+        "aboveCityGroundFt": 512.4,
+        "areaSqFt": 237,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 539.0,
+        "aboveCityGroundFt": 528.0,
+        "areaSqFt": 1332,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      }
+    ],
+    "1-wall": [
+      {
+        "absoluteFt": 103.0,
+        "aboveCityGroundFt": 74.0,
+        "areaSqFt": 3309,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 165.7,
+        "aboveCityGroundFt": 136.7,
+        "areaSqFt": 2473,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 200.8,
+        "aboveCityGroundFt": 171.8,
+        "areaSqFt": 2851,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 284.2,
+        "aboveCityGroundFt": 255.2,
+        "areaSqFt": 197,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 286.8,
+        "aboveCityGroundFt": 257.8,
+        "areaSqFt": 172,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 286.8,
+        "aboveCityGroundFt": 257.8,
+        "areaSqFt": 307,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 286.9,
+        "aboveCityGroundFt": 257.9,
+        "areaSqFt": 553,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 298.5,
+        "aboveCityGroundFt": 269.5,
+        "areaSqFt": 106,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 299.3,
+        "aboveCityGroundFt": 270.3,
+        "areaSqFt": 144,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 299.8,
+        "aboveCityGroundFt": 270.8,
+        "areaSqFt": 968,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 312.3,
+        "aboveCityGroundFt": 283.3,
+        "areaSqFt": 1034,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 312.7,
+        "aboveCityGroundFt": 283.7,
+        "areaSqFt": 1261,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 350.1,
+        "aboveCityGroundFt": 321.1,
+        "areaSqFt": 765,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 352.7,
+        "aboveCityGroundFt": 323.7,
+        "areaSqFt": 358,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 360.6,
+        "aboveCityGroundFt": 331.6,
+        "areaSqFt": 816,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 361.7,
+        "aboveCityGroundFt": 332.7,
+        "areaSqFt": 356,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 363.7,
+        "aboveCityGroundFt": 334.7,
+        "areaSqFt": 241,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 363.7,
+        "aboveCityGroundFt": 334.7,
+        "areaSqFt": 238,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 372.6,
+        "aboveCityGroundFt": 343.6,
+        "areaSqFt": 153,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 398.9,
+        "aboveCityGroundFt": 369.9,
+        "areaSqFt": 960,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 400.4,
+        "aboveCityGroundFt": 371.4,
+        "areaSqFt": 217,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 400.4,
+        "aboveCityGroundFt": 371.4,
+        "areaSqFt": 268,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 401.1,
+        "aboveCityGroundFt": 372.1,
+        "areaSqFt": 4945,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 401.1,
+        "aboveCityGroundFt": 372.1,
+        "areaSqFt": 2224,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 413.5,
+        "aboveCityGroundFt": 384.5,
+        "areaSqFt": 370,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 428.5,
+        "aboveCityGroundFt": 399.5,
+        "areaSqFt": 532,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 428.5,
+        "aboveCityGroundFt": 399.5,
+        "areaSqFt": 1465,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 447.0,
+        "aboveCityGroundFt": 418.0,
+        "areaSqFt": 950,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 449.4,
+        "aboveCityGroundFt": 420.4,
+        "areaSqFt": 473,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 484.3,
+        "aboveCityGroundFt": 455.3,
+        "areaSqFt": 1496,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 493.0,
+        "aboveCityGroundFt": 464.0,
+        "areaSqFt": 231,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 634.7,
+        "aboveCityGroundFt": 605.7,
+        "areaSqFt": 4106,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 634.7,
+        "aboveCityGroundFt": 605.7,
+        "areaSqFt": 4655,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 654.0,
+        "aboveCityGroundFt": 625.0,
+        "areaSqFt": 148,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 654.0,
+        "aboveCityGroundFt": 625.0,
+        "areaSqFt": 151,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 662.8,
+        "aboveCityGroundFt": 633.8,
+        "areaSqFt": 91,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 683.0,
+        "aboveCityGroundFt": 654.0,
+        "areaSqFt": 1588,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 683.0,
+        "aboveCityGroundFt": 654.0,
+        "areaSqFt": 3393,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 686.6,
+        "aboveCityGroundFt": 657.6,
+        "areaSqFt": 1588,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      }
+    ],
+    "220-water": [
+      {
+        "absoluteFt": 90.3,
+        "aboveCityGroundFt": 80.3,
+        "areaSqFt": 2354,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 103.6,
+        "aboveCityGroundFt": 93.6,
+        "areaSqFt": 3664,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 103.6,
+        "aboveCityGroundFt": 93.6,
+        "areaSqFt": 1164,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 103.6,
+        "aboveCityGroundFt": 93.6,
+        "areaSqFt": 159,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 112.8,
+        "aboveCityGroundFt": 102.8,
+        "areaSqFt": 159,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      },
+      {
+        "absoluteFt": 114.4,
+        "aboveCityGroundFt": 104.4,
+        "areaSqFt": 1164,
+        "status": "confirmed",
+        "sources": [
+          "nyc-3d-citygml"
+        ]
+      }
+    ]
+  }
+}

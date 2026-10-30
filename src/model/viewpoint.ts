@@ -112,8 +112,32 @@ function headingToward(from: [number, number], to: [number, number]): number {
 }
 
 /**
+ * Camera 2.5 m outside the harbor-facing edge, at a caller-supplied elevation.
+ * The edge choice is not a surveyed window. Pass a confirmed roof elevation when
+ * that is the height you mean.
+ */
+export function parapetVantage(ring: [number, number][], elevationMeters: number): FloorVantage {
+  const center = ringCentroid(ring);
+  const edge = chooseHarborEdge(ring);
+  const outside: [number, number] = [
+    edge.midpoint[0] + edge.outward[0] * 2.5,
+    edge.midpoint[1] + edge.outward[1] * 2.5,
+  ];
+  const [longitude, latitude] = localToLonLat(center, outside[0], outside[1]);
+  const headingDegrees = (Math.atan2(edge.outward[0], edge.outward[1]) * 180) / Math.PI;
+  return {
+    longitude,
+    latitude,
+    heightMeters: elevationMeters,
+    headingDegrees: (headingDegrees + 360) % 360,
+    status: "estimated",
+    note: "The camera is 2.5 m outside the harbor-facing footprint edge. The height is whatever the caller passed. This is not a floor window.",
+  };
+}
+
+/**
  * Estimated eye position inside the footprint, facing the harbor-side edge.
- * This is not a surveyed window.
+ * This is not a surveyed window. Call it only with a measured floor elevation.
  */
 export function floorVantage(ring: [number, number][], floorTopMeters: number, eyeHeightMeters: number): FloorVantage {
   const center = ringCentroid(ring);

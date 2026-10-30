@@ -27,6 +27,7 @@ const actions: UiActions = {
   selectFloor: (floor) => void bridge.api?.selectFloor(floor),
   flyToFloor: () => void bridge.api?.flyToFloor(),
   enterView: () => void bridge.api?.enterView(),
+  enterRoof: () => void bridge.api?.enterRoof(),
   back: () => void bridge.api?.back(),
   home: () => void bridge.api?.home(),
   toggleSun: () => bridge.api?.toggleSun(),

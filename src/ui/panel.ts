@@ -2,7 +2,7 @@ import { queryDaylight } from "../analysis/daylight";
 import { queryTransit } from "../analysis/transit";
 import { queryViewQuality } from "../analysis/viewQuality";
 import { getDataset } from "../data/dataset";
-import { stackFloors } from "../model/floors";
+import { floorLevels } from "../model/floors";
 import type { BuildingRecord, DataPoint } from "../model/types";
 import type { UiActions, UiModel } from "./state";
 
@@ -17,6 +17,7 @@ export function renderPanel(root: HTMLElement, model: UiModel, actions: UiAction
 
   root.innerHTML = `
     ${model.imageryNote ? `<p class="note">${esc(model.imageryNote)}</p>` : ""}
+    ${model.tilesNote ? `<p class="note">${esc(model.tilesNote)}</p>` : ""}
     ${building ? buildingView(building, model) : selection.kind === "context" ? contextView(selection) : browseView()}
     ${stubs(building, selection.kind === "floor" || selection.kind === "view" ? selection.floor : null)}
     ${sunControls(model)}
@@ -41,6 +42,7 @@ export function renderPanel(root: HTMLElement, model: UiModel, actions: UiAction
   });
   root.querySelector("[data-action='fly']")?.addEventListener("click", () => actions.flyToFloor());
   root.querySelector("[data-action='view']")?.addEventListener("click", () => actions.enterView());
+  root.querySelector("[data-action='roof']")?.addEventListener("click", () => actions.enterRoof());
   root.querySelector("[data-action='back']")?.addEventListener("click", () => actions.back());
   root.querySelector("[data-action='sun']")?.addEventListener("click", () => actions.toggleSun());
   root.querySelector("[data-action='shadows']")?.addEventListener("click", () => actions.toggleShadows());
@@ -53,13 +55,14 @@ function browseView(): string {
   return `
     <p class="kicker">Five buildings with archived city records</p>
     <h2>Choose a building</h2>
-    <p class="lede">Hover a block to highlight it. Click a benchmark to split it into floors. Floors without a verified plan stay one grey plate.</p>
+    <p class="lede">Hover a block to highlight it. Near buildings are full city footprints in grey. Far buildings are simplified stand-ins at their published heights. Floor heights are listed only when a window row was measured.</p>
     <div class="building-list">
       ${dataset.buildings.map((building) => buildingButton(building)).join("")}
     </div>
     <ul class="legend">
       <li><span class="swatch shell"></span> Benchmark massing</li>
-      <li><span class="swatch context"></span> Other footprints</li>
+      <li><span class="swatch context"></span> Near field, full footprint, grey</li>
+      <li><span class="swatch far"></span> Far field, simplified</li>
       <li><span class="swatch plate"></span> Unverified floor plate</li>
       <li><span class="swatch limit"></span> Camera limit</li>
     </ul>
@@ -79,21 +82,27 @@ function contextView(selection: Extract<UiModel["selection"], { kind: "context" 
   const height =
     selection.plinth || selection.heightRoofFt == null
       ? "Roof height is missing or zero in the city extract, so this footprint is drawn as a 4 ft plinth (estimated)."
-      : `Roof height ${formatNumber(selection.heightRoofFt)} ft (confirmed city footprint). Ground elevation ${selection.groundElevationFt ?? "—"} ft.`;
+      : `Roof height ${formatNumber(selection.heightRoofFt)} ft. Ground elevation ${selection.groundElevationFt ?? "—"} ft. Source ${selection.source}.`;
+  const tier =
+    selection.tier === "far"
+      ? "Far-field stand-in. The ring is simplified. The height and position are the published values. It sits outside the half-mile full-detail radius."
+      : "Near-field block, within about half a mile of a benchmark. The ring is the full city footprint, drawn in grey so the five benchmarks stay distinct.";
   return `
     <button type="button" class="text-button" data-action="back">Back</button>
     <h2>Footprint ${esc(selection.bin)}</h2>
     <p>${esc(height)}</p>
-    <p>This block is only in the citywide footprint layer. It is not one of the five buildings with a verification record, so no unit count is shown.</p>
+    <p>${esc(tier)}</p>
+    <p>This block is not one of the five buildings with a floor record, so no unit count is shown.</p>
   `;
 }
 
 function buildingView(building: BuildingRecord, model: UiModel): string {
   const selection = model.selection;
   const floor = selection.kind === "floor" || selection.kind === "view" ? selection.floor : null;
-  const levels = stackFloors(building);
+  const levels = floorLevels(building);
   const level = floor == null ? null : levels.find((item) => item.number === floor) ?? null;
-  const perFloor = building.heightRoofFt.value / building.stories.value;
+  const measured = level != null && level.baseMeters != null && level.topMeters != null;
+  const roofView = selection.kind === "roof";
 
   return `
     <button type="button" class="text-button" data-action="back">${selection.kind === "view" ? "Leave the floor" : "All buildings"}</button>
@@ -106,27 +115,31 @@ function buildingView(building: BuildingRecord, model: UiModel): string {
       ${fact("Residential units", String(building.residentialUnits.value), building.residentialUnits)}
       ${fact("Certificate dwelling units", building.dwellingUnitsOnCertificate.value == null ? "Not in the extract" : String(building.dwellingUnitsOnCertificate.value), building.dwellingUnitsOnCertificate)}
     </dl>
-    <p class="estimate">Equal floor spacing is estimated: about ${perFloor.toFixed(1)} ft if ${building.heightRoofFt.value} ft is divided by ${building.stories.value} stories. Setbacks are not in the footprint and are not guessed.</p>
+    <p class="estimate">${esc(building.massing.note)} Roof height is not split into equal floors.</p>
     ${building.conflicts.length ? `<div class="conflicts"><p>Published claims not used in the model</p><ul>${building.conflicts.map((conflict) => `<li><strong>${esc(conflict.field)}</strong>: city record ${esc(conflict.modelValue)}; other source ${esc(conflict.otherValue)}.</li>`).join("")}</ul></div>` : ""}
     ${
       floor == null
-        ? `<p class="prompt">Select a floor. The building stays whole until you do.</p>`
-        : `<p class="prompt">Floor ${floor} is open. Everything above it is hidden. The grey plate is the city footprint at an estimated height, not a unit plan.</p>`
+        ? `<p class="prompt">Select a floor. A floor without a measured window elevation stays grey and is not sliced.</p>`
+        : measured
+          ? `<p class="prompt">Floor ${floor} is open at its measured elevation. Everything above it is hidden. The grey plate is not a unit plan.</p>`
+          : `<p class="prompt">Floor ${floor} is unverified. No window-row elevation was archived, so it is not given a height, not sliced, and has no view camera.</p>`
     }
+    ${roofView ? `<p class="view-banner">The camera is at the confirmed roof, 2.5 m outside the harbor-facing edge, with a 60° horizontal field of view. This is not a floor window. The sky is the globe atmosphere. Distant blocks are simplified open-data stand-ins.</p>` : ""}
     <div class="floor-actions">
-      ${floor == null ? "" : `<button type="button" data-action="fly">Fly in toward this floor</button>`}
-      ${floor == null ? "" : `<button type="button" data-action="view">${selection.kind === "view" ? "View from this floor" : "Look out from this floor"}</button>`}
+      ${floor == null || !measured ? "" : `<button type="button" data-action="fly">Fly in toward this floor</button>`}
+      ${floor == null || !measured ? "" : `<button type="button" data-action="view">${selection.kind === "view" ? "View from this floor" : "Look out from this floor"}</button>`}
+      <button type="button" data-action="roof">Look from the confirmed roof</button>
     </div>
     ${
       selection.kind === "view" && level
-        ? `<p class="view-banner">View-from-floor is estimated. The eye is inside the footprint, ${level.topMeters.toFixed(0)} m above the ellipsoid plus eye height. The sky is an illustrative harbor backdrop, not a photograph and not a scored view.</p>`
+        ? `<p class="view-banner">The eye is at the measured window-row midpoint inside the footprint, ${level.topMeters == null ? "—" : level.topMeters.toFixed(0)} m above the ellipsoid, with a 60° horizontal field of view. Surrounding buildings stay in front of the atmosphere. This is not a scored view.</p>`
         : ""
     }
     <div class="floors" role="group" aria-label="Floors">
       ${levels
         .map(
           (item) =>
-            `<button type="button" data-floor="${item.number}" class="${item.number === floor ? "is-current" : ""}" aria-pressed="${item.number === floor}">${item.number}</button>`,
+            `<button type="button" data-floor="${item.number}" class="${item.number === floor ? "is-current" : ""} ${item.elevationStatus === "unverified" ? "is-unverified" : ""}" aria-pressed="${item.number === floor}">${item.label ?? item.number}</button>`,
         )
         .join("")}
     </div>
@@ -179,7 +192,8 @@ function liveText(model: UiModel): string {
   const building = dataset.buildings.find((item) => item.id === selection.buildingId);
   const name = building?.name ?? selection.buildingId;
   if (selection.kind === "building") return `${name} selected.`;
-  if (selection.kind === "floor") return `${name}, floor ${selection.floor}. Upper floors hidden.`;
+  if (selection.kind === "floor") return `${name}, floor ${selection.floor}.`;
+  if (selection.kind === "roof") return `${name}, looking out from the confirmed roof.`;
   return `${name}, looking out from floor ${selection.floor}.`;
 }
 

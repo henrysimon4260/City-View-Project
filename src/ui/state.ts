@@ -1,15 +1,25 @@
 export type Selection =
   | { kind: "browse" }
-  | { kind: "context"; bin: string; heightRoofFt: number | null; groundElevationFt: number | null; plinth: boolean }
+  | {
+      kind: "context";
+      bin: string;
+      heightRoofFt: number | null;
+      groundElevationFt: number | null;
+      plinth: boolean;
+      tier: "near" | "far";
+      source: string;
+    }
   | { kind: "building"; buildingId: string }
   | { kind: "floor"; buildingId: string; floor: number }
-  | { kind: "view"; buildingId: string; floor: number };
+  | { kind: "view"; buildingId: string; floor: number }
+  | { kind: "roof"; buildingId: string };
 
 export interface UiModel {
   selection: Selection;
   sunPreview: boolean;
   shadows: boolean;
   imageryNote: string | null;
+  tilesNote: string | null;
 }
 
 export interface UiActions {
@@ -17,6 +27,7 @@ export interface UiActions {
   selectFloor: (floor: number) => void;
   flyToFloor: () => void;
   enterView: () => void;
+  enterRoof: () => void;
   back: () => void;
   home: () => void;
   toggleSun: () => void;

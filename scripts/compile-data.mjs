@@ -168,6 +168,8 @@ const dobNowRows = readJson("dobnow-co.json");
 const legacyRows = readJson("legacy-co.json");
 const geosearch = readJson("geosearch.json");
 const claims = readJson("published-claims.json");
+const roofTiers = readJson("citygml-roof-tiers.json");
+const viewTiers = readJson("view-tiers.json");
 
 const citations = [
   {
@@ -241,6 +243,62 @@ const citations = [
     url: "https://github.com/henrysimon4260/City-View-Project/blob/main/docs/DATA.md",
     retrieved: RETRIEVED,
     note: "StreetEasy robots.txt disallows /building/*/floorplans, /sale/*, and /rental/*. Zillow's terms restrict automated access. Compass was not given an official open API in this pipeline. No listing-site pages were fetched.",
+  },
+  {
+    id: "nyc-3d-citygml",
+    title: "NYC 3D Building Model (CityGML)",
+    publisher: "NYC Office of Technology and Innovation, distributed by NYC Open Data",
+    url: "https://maps.nyc.gov/download/3dmodel/DA_WISE_GML.zip",
+    retrieved: RETRIEVED,
+    note: "DA_WISE_GMLs/DA12_3D_Buildings_Merged.gml from the 2016 CityGML zip. The model is the 2014 aerial survey. License: NYC Open Data terms, https://www.nyc.gov/home/terms-of-use.page. Roof and wall surfaces are copied. The model has no floor plates. 130 William and 7 Dey are absent because they were built later.",
+  },
+  {
+    id: "wiki-15-william",
+    title: "15 William",
+    publisher: "Wikipedia, CC BY-SA 4.0",
+    url: "https://en.wikipedia.org/wiki/15_William",
+    retrieved: RETRIEVED,
+    note: "Infobox floor_count 47 and roof 528 ft. The roof matches the city height. The story count does not. Short quoted facts only.",
+  },
+  {
+    id: "wiki-1-wall",
+    title: "1 Wall Street",
+    publisher: "Wikipedia, CC BY-SA 4.0",
+    url: "https://en.wikipedia.org/wiki/1_Wall_Street",
+    retrieved: RETRIEVED,
+    note: "Infobox floor_count 50, top_floor 52, roof 654 ft. The article says the official count of 50 excludes two dormer floors. PLUTO numfloors is 52.",
+  },
+  {
+    id: "wiki-landmarks",
+    title: "Landmark coordinates",
+    publisher: "Wikipedia primary coordinates, CC BY-SA 4.0",
+    url: "https://en.wikipedia.org/wiki/One_World_Trade_Center",
+    retrieved: RETRIEVED,
+    note: "Primary coordinates retrieved from the Wikipedia API for the Statue of Liberty, One World Trade Center, and the Brooklyn Bridge. One WTC and Liberty Island angles use the nearby city footprint roof, not a new mesh.",
+  },
+  {
+    id: "osm-simple3d",
+    title: "OpenStreetMap building ways, Jersey City waterfront and Lower Manhattan tags",
+    publisher: "OpenStreetMap contributors, ODbL 1.0",
+    url: "https://www.openstreetmap.org/copyright",
+    retrieved: RETRIEVED,
+    note: "Jersey City ways with a height tag are simplified far-field extrusions. OSM has no Jersey City ground elevation, so those bases sit at 0 in the same feet-as-ellipsoid frame as the NYC footprints. Buildings without a height tag are omitted. Google Street View was not scraped.",
+  },
+  {
+    id: "google-3d-tiles",
+    title: "Photorealistic 3D Tiles",
+    publisher: "Google Maps Platform, Map Tiles API",
+    url: "https://developers.google.com/maps/documentation/tile/3d-tiles",
+    retrieved: RETRIEVED,
+    note: "Streamed in Cesium only when VITE_GOOGLE_MAPS_KEY is set. Tiles are not copied into the repository. The headless check ran without a key, so that tier was off.",
+  },
+  {
+    id: "lidar-3dep",
+    title: "USGS 3DEP elevation image service",
+    publisher: "U.S. Geological Survey, public domain",
+    url: "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+    retrieved: RETRIEVED,
+    note: "An identify request at 1 Wall Street returned NoData. The NYC 2017 topobathymetric point cloud was not downloaded. Near-field heights in this build are footprint height_roof and the 2014 CityGML mesh, not a new lidar sample.",
   },
 ];
 
@@ -345,8 +403,8 @@ function dwellingPoint(record) {
 
 function considerClaims(buildingId, city, conflicts, corroboration) {
   const published = claims.filter((item) => item.buildingId === buildingId);
-  const source = claimSource[buildingId];
   for (const page of published) {
+    const source = page.sourceId ?? claimSource[buildingId];
     for (const claim of page.claims) {
       const other = Number(String(claim.value).replace(/,/g, ""));
       if (claim.field === "stories" && city.stories != null) {
@@ -482,6 +540,36 @@ const buildings = BUILDINGS.map((config) => {
     );
   }
   notes.push("No per-unit footprint, line letter, or floor-plan coordinate was present in the sources archived for this building. unitLines is empty on purpose.");
+  notes.push(
+    "Floor elevations are not an even split of roof height. No window-row measurement was reliable enough to publish: street-level photos are cropped and foreshortened, and a luminance pass on the distant 15 William photograph did not lock one peak to each floor. Every ordinal floor is unverified and is not drawn.",
+  );
+
+  const tierRows = roofTiers.buildings?.[config.id] ?? [];
+  const massing = tierRows.length
+    ? {
+        kind: "citygml",
+        status: "confirmed",
+        sources: ["nyc-3d-citygml"],
+        note: `NYC 3D model mesh, 2014 aerial survey, ${tierRows.length} horizontal roof surfaces. Those surfaces are setbacks and crowns, not floor plates.`,
+      }
+    : {
+        kind: "footprint-envelope",
+        status: "confirmed",
+        sources: ["footprints", "nyc-3d-citygml"],
+        note:
+          config.id === "7-dey"
+            ? "The 2014 CityGML does not include this building. The cantilever underside elevation is not in the archive, so the single city ring is kept and a separated cantilever is not invented."
+            : "The 2014 CityGML does not include this building. Setbacks and the crown are not in the archived mesh, so they are not drawn. The block is the city footprint extruded to height_roof.",
+      };
+  const floors = Array.from({ length: stories }, (_, index) => ({
+    number: index + 1,
+    label: null,
+    baseFt: null,
+    topFt: null,
+    elevationStatus: "unverified",
+    sources: ["pluto", "dob-now-co", "dob-legacy-co", "nyc-3d-citygml"],
+    note: "PLUTO ordinal. Certificate tables and the CityGML mesh do not give this floor's elevation. It is not drawn.",
+  }));
 
   const landmarkText = lot.landmark ? String(lot.landmark) : null;
   const historicText = lot.histdist ? String(lot.histdist) : null;
@@ -548,6 +636,8 @@ const buildings = BUILDINGS.map((config) => {
     ownerName: dp(String(lot.ownername), "confirmed", ["pluto"], "PLUTO ownername on the billing lot."),
     certificate: buildCertificatePoint(co),
     unitLines: [],
+    floors,
+    massing,
     conflicts,
     corroboration,
     notes,
@@ -555,11 +645,12 @@ const buildings = BUILDINGS.map((config) => {
 });
 
 const datasetNotes = [
-  "Story count and roof height are city fields. The app splits roof height into equal floors. That floor-to-floor dimension is estimated. The archived certificate tables do not list floor elevations.",
-  "Every floor reuses the published footprint ring, at that estimated elevation. The footprint dataset here has one ring per benchmark BIN, so setbacks are not drawn and are not guessed.",
-  "A selected floor is drawn as one grey plate on that ring. Grey means the unit layout is unverified. Rooms, line letters, and unit polygons are not invented. unitLines is empty for all five buildings.",
-  "Absolute height above the WGS84 ellipsoid is an estimate: ground_elevation and height_roof, converted with 0.3048 meters per foot, with no NAVD88 geoid separation applied.",
-  "StreetEasy, Zillow, and Compass were not crawled. StreetEasy's robots.txt disallows floor-plan, sale, and rental paths. Zillow's terms restrict automated access. No active listing, rent, or sale price is shown.",
+  "Story count and roof height are city fields. Roof height is not divided into equal floors. A floor is drawn only when its elevation is archived. None of the five buildings has a measured window-row elevation in this archive, so every floor is unverified and grey.",
+  "15 William, 1 Wall Street, and 220 Water Street use the 2014 NYC CityGML mesh (setbacks and crowns). 130 William and 7 Dey were built later and are the city footprint at height_roof. 7 Dey's cantilever is still one ring because the underside elevation was not found.",
+  `Near field is every footprint in the study extract (${viewTiers.studyNearFeatures} buildings), about a half mile around the benchmarks, at the city roof height, drawn grey. Far field is ${viewTiers.farFeatures} simplified stand-ins (${viewTiers.farFootprints} NYC footprints, ${viewTiers.farJersey} OpenStreetMap Jersey City buildings with a height tag, ${viewTiers.farLiberty} Liberty Island footprints).`,
+  "Outward views use a 60° horizontal field of view. The illustrative harbor skybox is not used. Google Photorealistic 3D Tiles load only with VITE_GOOGLE_MAPS_KEY and were not on for the headless check.",
+  "Absolute height above the WGS84 ellipsoid is an estimate: ground_elevation and height_roof, converted with 0.3048 meters per foot, with no NAVD88 geoid separation applied. The USGS 3DEP identify call at 1 Wall Street returned NoData, so 2017 lidar was not sampled into new heights.",
+  "StreetEasy, Zillow, and Compass were not crawled. Google Street View was not scraped. No active listing, rent, or sale price is shown.",
 ];
 
 const dataset = {
@@ -620,10 +711,10 @@ lines.push("");
 lines.push("Status words mean only this:");
 lines.push("");
 lines.push("- **confirmed** — the value is copied from a cited public source archived in this repo.");
-lines.push("- **estimated** — the value is calculated from confirmed inputs and the calculation is disclosed. Floor elevations and the ellipsoid altitude are estimated. They are computed in the app, not stored as extra city facts.");
+lines.push("- **estimated** — the value is calculated from confirmed inputs and the calculation is disclosed. The ellipsoid altitude is estimated. A measured window row would be estimated. None are stored for these floors.");
 lines.push("- **unverified** — the source does not say, was not available, or a published claim disagrees with the city figure the model uses. Unverified claims are not drawn.");
 lines.push("");
-lines.push("Unit polygons, line letters, and floor plans are **unverified** for every benchmark building. `unitLines` is an empty array. The map draws one grey plate on the city footprint instead of guessing rooms.");
+lines.push("Unit polygons, line letters, and floor plans are **unverified** for every benchmark building. `unitLines` is an empty array. Floor elevations are unverified too: the map does not draw a sliced floor or a guessed window camera. Grey floor buttons are those unverified ordinals.");
 lines.push("");
 lines.push("## Summary");
 lines.push("");
@@ -698,6 +789,27 @@ for (const building of buildings) {
   lines.push("Notes:");
   lines.push("");
   for (const note of building.notes) lines.push(`- ${note}`);
+  lines.push("");
+  lines.push(`Massing: ${building.massing.kind} (${building.massing.status}; ${building.massing.sources.join(", ")}). ${building.massing.note}`);
+  lines.push("");
+  const tiers = roofTiers.buildings?.[building.id] ?? [];
+  if (tiers.length) {
+    lines.push("CityGML horizontal roof surfaces. These are massing elevations, not floor plates.");
+    lines.push("");
+    lines.push("| Absolute ft | Feet above city ground | Area sq ft | Status | Sources |");
+    lines.push("| --- | --- | --- | --- | --- |");
+    for (const tier of tiers) {
+      lines.push(`| ${tier.absoluteFt} | ${tier.aboveCityGroundFt} | ${tier.areaSqFt} | ${tier.status} | ${tier.sources.join(", ")} |`);
+    }
+    lines.push("");
+  }
+  lines.push("Floor elevations. Base and top are feet above the city ground elevation. Null means the floor is not drawn.");
+  lines.push("");
+  lines.push("| Floor | Label | Base ft | Top ft | Status | Sources |");
+  lines.push("| --- | --- | --- | --- | --- | --- |");
+  for (const floor of building.floors) {
+    lines.push(`| ${floor.number} | ${floor.label ?? "—"} | ${floor.baseFt ?? "—"} | ${floor.topFt ?? "—"} | ${floor.elevationStatus} | ${floor.sources.join(", ")} |`);
+  }
   lines.push("");
 }
 

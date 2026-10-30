@@ -2,7 +2,7 @@
 
 Explore individual rental and condo units in a 3D downtown Manhattan map, with daylight and views factored in.
 
-The map is limited to Manhattan south of Chambers Street, from the Hudson to the Brooklyn Bridge and down to the Battery, including City Hall. Five buildings have a verification record: 15 William Street, 130 William Street, 1 Wall Street, 7 Dey Street, and 220 Water Street. Massing comes from NYC building footprints extruded to the city’s roof height. Floors that do not have a verified plan are one grey plate. Unit rooms are not guessed.
+The map is limited to Manhattan south of Chambers Street for full-detail blocks, from the Hudson to the Brooklyn Bridge and down to the Battery, including City Hall. Buildings farther out, including the Brooklyn waterfront, Jersey City towers that OpenStreetMap gives a height for, and Liberty Island, are simplified stand-ins at their published heights. Five buildings have a verification record: 15 William Street, 130 William Street, 1 Wall Street, 7 Dey Street, and 220 Water Street. 15 William, 1 Wall Street, and 220 Water use the 2014 NYC 3D model. The other two are the city footprint at the city roof height. Floor elevations are not guessed. Unit rooms are not guessed.
 
 The full status table is [docs/VERIFICATION.md](docs/VERIFICATION.md). How the archive was built is [docs/DATA.md](docs/DATA.md). A load-size and frame-rate check is [docs/FEASIBILITY.md](docs/FEASIBILITY.md).
 
@@ -42,7 +42,15 @@ The preview server also uses the `/City-View-Project/` base. After `npm run buil
 
 ### Cesium ion token
 
-You do not need a Cesium ion token. Without one, the globe uses USGS imagery from The National Map, a smooth ellipsoid instead of world terrain, and the NYC footprints for buildings.
+You do not need a Cesium ion token or a Google key. Without them, the globe uses USGS imagery from The National Map, a smooth ellipsoid instead of world terrain, and the NYC footprints for buildings.
+
+Photorealistic 3D Tiles are optional. To stream them from Google's Map Tiles API, add this to `.env.local` and restart:
+
+```bash
+VITE_GOOGLE_MAPS_KEY=your_key_here
+```
+
+The key is not written into the repository. Tiles are not downloaded into the project. The site shows the Google attribution Cesium reports for that tileset.
 
 To set a token anyway, create `.env.local` in the project root:
 
@@ -55,10 +63,10 @@ Restart `npm run dev`. The token is optional and is not required for the footpri
 ## How to use the map
 
 - Hover a building to highlight it. On a phone, tap it.
-- Click one of the five benchmark buildings. Its floors become separate slices.
-- Click a floor, in the list or on the model. Stories above that floor hide, and a grey plate is drawn on the city footprint at that height.
-- Hover the plate to highlight it. Click it, or use “Fly in toward this floor”, to move the camera in.
-- “Look out from this floor” puts the camera at an estimated eye height inside the footprint. The cards at the horizon are an illustrative harbor backdrop, not a photograph.
+- Click one of the five benchmark buildings.
+- Click a floor in the list. Grey buttons have no measured elevation, so the model is not sliced and there is no window camera.
+- “Look from the confirmed roof” puts the camera at the city roof height, just outside the harbor-facing edge, with a 60° horizontal field of view. The sky is the globe, not a painted backdrop.
+- If a later archive measures a window row, “Look out from this floor” uses that elevation.
 - Esc steps back. Reset view returns to the district.
 
 Daylight hours, view quality, and transit proximity are stubs. The sun button only previews Cesium’s light. Unit photos are not wired; a click still notifies `onUnitActivated` in `src/gallery/hook.ts`.

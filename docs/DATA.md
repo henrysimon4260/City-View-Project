@@ -5,8 +5,8 @@ The map is a static site. It does not call listing sites or the city APIs in the
 ## Status words
 
 - **confirmed** — copied from a cited source in the archive.
-- **estimated** — calculated from confirmed inputs. Equal floor heights and the WGS84 altitude are estimated. The eye position in view-from-floor mode is estimated.
-- **unverified** — the archived source does not say, or a published claim disagrees with the city figure the model uses. Unverified values are not drawn as geometry.
+- **estimated** — calculated from confirmed inputs and the calculation is disclosed. The WGS84 altitude, with no geoid, is estimated. A roof-edge camera position is estimated in plan and uses a confirmed roof height.
+- **unverified** — the archived source does not say, or a published claim disagrees with the city figure the model uses. Unverified floor elevations are not drawn.
 
 `docs/VERIFICATION.md` is the per-building table. It is generated. Change the cache or the compiler, then run `npm run compile-data`.
 
@@ -14,9 +14,15 @@ The map is a static site. It does not call listing sites or the city APIs in the
 
 Context blocks are NYC building footprints (`5zhs-2jue`) inside a box from the Battery to just north of Chambers Street, and east across the Brooklyn Bridge. `height_roof` is feet above ground. `ground_elevation` is feet. Both are placed on the WGS84 ellipsoid with `0.3048` meters per foot and no geoid model, so the absolute altitude is estimated even when the foot measurements are confirmed.
 
-Each benchmark is one ring extruded to the city roof height, then split into `numfloors` equal stories. The footprint file has one ring per benchmark BIN, so setbacks are not reconstructed. 7 Dey Street is feature code 1006, a cantilevered building; the cantilever is not modeled beyond that single ring.
+15 William, 1 Wall Street, and 220 Water are the NYC CityGML mesh from the 2014 aerial survey (`public/data/benchmark-massing.json`). That mesh has setbacks and crowns. It does not have floor plates. 130 William and 7 Dey are later buildings, so they stay the city footprint extruded to `height_roof`. 7 Dey is feature code 1006. The underside of the cantilever is not in the archive, so the ring is not split into a invented overhang.
 
-Selecting a floor hides the stories above it and draws one grey plate on the same ring. Grey means the unit layout is unverified. `unitLines` is empty. The schema still accepts a line such as “A on floors 5–30” when a later archive includes a ring, a status other than unverified, and at least one source. A ring marked unverified is rejected.
+Roof height is not divided into equal floors. `floors` lists every PLUTO ordinal with a null elevation until a window-row measurement is archived. Selecting one of those floors does not slice the mesh and does not move a camera to a guessed sill.
+
+Near-field context is every study-area footprint, drawn grey, at the city height. Far-field context is `public/data/far-field.json`: simplified rings, published heights, outside a half-mile radius. Jersey City rows come from OpenStreetMap ways that already have a `height` tag (ODbL). Liberty Island uses the city footprints, including BIN 1000002 at 119.11 ft. No statue mesh was added on top.
+
+`scripts/build-view-geometry.py` rebuilds the mesh and the far field from the CityGML extract and the open-data downloads. Google Photorealistic 3D Tiles are optional at runtime (`VITE_GOOGLE_MAPS_KEY`) and are not stored here. Google Street View is not scraped.
+
+Selecting a floor that later has an elevation hides the stories above it and draws one grey plate. Grey still means the unit layout is unverified. `unitLines` is empty. The schema still accepts a line such as “A on floors 5–30” when a later archive includes a ring, a status other than unverified, and at least one source. A ring marked unverified is rejected.
 
 ## Pipeline
 

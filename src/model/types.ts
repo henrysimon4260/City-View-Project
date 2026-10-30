@@ -50,6 +50,24 @@ export interface Corroboration {
   note: string;
 }
 
+/** One ordinal story. Elevations are feet above the city ground elevation, or null when they were not measured. */
+export interface FloorRecord {
+  number: number;
+  label: string | null;
+  baseFt: number | null;
+  topFt: number | null;
+  elevationStatus: VerificationStatus;
+  sources: string[];
+  note?: string;
+}
+
+export interface MassingSummary {
+  kind: "citygml" | "footprint-envelope";
+  status: VerificationStatus;
+  sources: string[];
+  note: string;
+}
+
 export interface BuildingRecord {
   id: string;
   name: string;
@@ -81,6 +99,8 @@ export interface BuildingRecord {
   ownerName: DataPoint<string>;
   certificate: DataPoint<string | null>;
   unitLines: UnitLine[];
+  floors: FloorRecord[];
+  massing: MassingSummary;
   conflicts: ConflictRecord[];
   corroboration: Corroboration[];
   notes: string[];

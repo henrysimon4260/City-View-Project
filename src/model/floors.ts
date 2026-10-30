@@ -1,29 +1,47 @@
-import type { BuildingRecord, UnitLine } from "./types";
+import type { BuildingRecord, FloorRecord, UnitLine } from "./types";
 
 export const FEET_TO_METERS = 0.3048;
 export const EYE_HEIGHT_METERS = 1.6;
 
 export interface FloorLevel {
   number: number;
-  baseMeters: number;
-  topMeters: number;
-  elevationStatus: "estimated";
+  label: string | null;
+  baseMeters: number | null;
+  topMeters: number | null;
+  elevationStatus: "confirmed" | "estimated" | "unverified";
+  sources: string[];
+  note?: string;
 }
 
-export function stackFloors(building: Pick<BuildingRecord, "stories" | "heightRoofFt" | "groundElevationFt">): FloorLevel[] {
-  const stories = building.stories.value;
-  if (!Number.isInteger(stories) || stories < 1) {
-    throw new Error(`Refusing to divide a non-integer story count (${stories}).`);
-  }
+/**
+ * Floor elevations come only from the archived record. Roof height is not divided
+ * into equal stories. A floor with no measured elevation stays null and is not drawn.
+ */
+export function floorLevels(building: Pick<BuildingRecord, "floors" | "groundElevationFt">): FloorLevel[] {
   const ground = building.groundElevationFt.value * FEET_TO_METERS;
-  const roof = ground + building.heightRoofFt.value * FEET_TO_METERS;
-  const step = (roof - ground) / stories;
-  return Array.from({ length: stories }, (_, index) => ({
-    number: index + 1,
-    baseMeters: ground + index * step,
-    topMeters: ground + (index + 1) * step,
-    elevationStatus: "estimated" as const,
-  }));
+  return building.floors.map((floor) => {
+    if (floor.elevationStatus === "unverified" && (floor.baseFt != null || floor.topFt != null)) {
+      throw new Error(`Floor ${floor.number} is unverified and still has an elevation.`);
+    }
+    if (floor.elevationStatus !== "unverified" && (floor.baseFt == null || floor.topFt == null || floor.sources.length === 0)) {
+      throw new Error(`Floor ${floor.number} claims an elevation without a complete measurement.`);
+    }
+    return {
+      number: floor.number,
+      label: floor.label,
+      baseMeters: floor.baseFt == null ? null : ground + floor.baseFt * FEET_TO_METERS,
+      topMeters: floor.topFt == null ? null : ground + floor.topFt * FEET_TO_METERS,
+      elevationStatus: floor.elevationStatus,
+      sources: floor.sources,
+      note: floor.note,
+    };
+  });
+}
+
+export function floorWithElevation(levels: FloorLevel[], floor: number): FloorLevel | null {
+  const level = levels.find((item) => item.number === floor);
+  if (!level || level.baseMeters == null || level.topMeters == null) return null;
+  return level;
 }
 
 export interface UnverifiedPlate {
@@ -75,6 +93,20 @@ function lineCoversFloor(line: UnitLine, floor: number): boolean {
 
 function drawableRing(line: UnitLine): boolean {
   return Boolean(line.ring && line.ring.length >= 4 && line.ringStatus !== "unverified" && line.sources.length > 0);
+}
+
+export function assertFloors(floors: FloorRecord[]): void {
+  const numbers = new Set<number>();
+  for (const floor of floors) {
+    if (!Number.isInteger(floor.number) || floor.number < 1) {
+      throw new Error("Floor number must be a positive integer.");
+    }
+    if (numbers.has(floor.number)) throw new Error(`Duplicate floor ${floor.number}.`);
+    numbers.add(floor.number);
+    if (floor.elevationStatus === "unverified" && (floor.baseFt != null || floor.topFt != null)) {
+      throw new Error(`Unverified floor ${floor.number} must not carry an elevation.`);
+    }
+  }
 }
 
 export function assertUnitLines(lines: UnitLine[]): void {

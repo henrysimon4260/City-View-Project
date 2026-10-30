@@ -120,11 +120,11 @@ export async function createViewer(container: HTMLElement): Promise<ViewerHandle
   scene.globe.baseColor = Cesium.Color.fromCssColorString("#7f9b98");
   scene.globe.enableLighting = false;
   scene.fog.enabled = true;
-  scene.fog.density = 0.00018;
+  scene.fog.density = 0.00008;
   scene.backgroundColor = Cesium.Color.fromCssColorString("#16303a");
   scene.screenSpaceCameraController.enableCollisionDetection = true;
   scene.screenSpaceCameraController.minimumZoomDistance = 8;
-  scene.screenSpaceCameraController.maximumZoomDistance = 5000;
+  scene.screenSpaceCameraController.maximumZoomDistance = 12000;
   scene.screenSpaceCameraController.inertiaSpin = 0.35;
   scene.screenSpaceCameraController.inertiaTranslate = 0.35;
   scene.screenSpaceCameraController.inertiaZoom = 0.4;

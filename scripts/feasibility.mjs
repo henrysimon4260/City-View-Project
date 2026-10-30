@@ -105,10 +105,6 @@ for (const id of buildings) {
   if (afterSelect.kind !== "building" || afterSelect.buildingId !== id) {
     throw new Error(`Select failed for ${id}: ${JSON.stringify(afterSelect)}`);
   }
-  const stories = await page.evaluate(
-    (buildingId) => document.querySelectorAll("#panel [data-floor]").length && buildingId,
-    id,
-  );
   const floor = id === "220-water" ? 4 : 12;
   await page.click(`#panel [data-floor="${floor}"]`);
   await page.waitForFunction(
@@ -120,25 +116,40 @@ for (const id of buildings) {
     floor,
   );
   const panelText = await page.$eval("#panel", (el) => el.innerText);
-  if (!/unverified|grey plate/i.test(panelText)) {
-    throw new Error(`Floor panel for ${id} did not describe the unverified plate`);
+  if (!/unverified/i.test(panelText)) {
+    throw new Error(`Floor panel for ${id} did not describe the unverified floor`);
   }
-  await page.click("#panel [data-action='fly']");
+  const flyCount = await page.$$eval("#panel [data-action='fly']", (nodes) => nodes.length);
+  if (flyCount !== 0) {
+    throw new Error(`Unverified floor ${id} still offered a fly-in`);
+  }
   if (id === "15-william") {
-    await page.evaluate(() => window.__cityView.sampleFps(400));
-    await shot("02-15-william-slice");
+    await page.click("#panel [data-action='roof']");
+    await page.waitForFunction(() => window.__cityView.getModel().selection.kind === "roof");
+    const camera = await page.evaluate(() => window.__cityView.readCamera());
+    if (camera.height < 50 || camera.height > 800) {
+      throw new Error(`Roof camera height out of range for ${id}: ${camera.height}`);
+    }
+    await shot("02-15-william-roof");
+    result.steps.push({ name: `${id}-roof`, camera, fps: await page.evaluate(() => window.__cityView.sampleFps(800)) });
   }
-  await page.click("#panel [data-action='view']");
-  await page.waitForFunction(() => window.__cityView.getModel().selection.kind === "view");
-  const camera = await page.evaluate(() => window.__cityView.readCamera());
-  if (camera.height < 5 || camera.height > 800) {
-    throw new Error(`View camera height out of range for ${id}: ${camera.height}`);
-  }
-  result.steps.push({ name: id, floor, camera, fps: await page.evaluate(() => window.__cityView.sampleFps(800)) });
-  if (id === "130-william") await shot("03-130-william-view");
+  result.steps.push({ name: id, floor, fps: await page.evaluate(() => window.__cityView.sampleFps(400)) });
   await page.evaluate(() => window.__cityView.back());
-  await page.waitForFunction(() => window.__cityView.getModel().selection.kind === "floor");
 }
+
+await page.evaluate(() => window.__cityView.setTierVisible("far", false));
+result.steps.push({ name: "near-field-fps", fps: await page.evaluate(() => window.__cityView.sampleFps(1200)) });
+await page.evaluate(() => window.__cityView.setTierVisible("far", true));
+result.steps.push({ name: "near-and-far-fps", fps: await page.evaluate(() => window.__cityView.sampleFps(1200)) });
+result.sightlines = await page.evaluate(() => window.__cityView.measureSightlines());
+const worst = result.sightlines.aimed.reduce(
+  (max, item) => Math.max(max, Math.abs(item.bearingErrorDegrees), Math.abs(item.elevationErrorDegrees)),
+  0,
+);
+if (worst > 1 || Math.abs(result.sightlines.horizonResidualDegrees) > 0.25) {
+  throw new Error(`Sightline error too large: ${JSON.stringify(result.sightlines)}`);
+}
+await shot("03-sightline");
 
 await page.evaluate(() => window.__cityView.home());
 await page.evaluate(() => window.__cityView.toggleSun());
