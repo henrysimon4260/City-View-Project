@@ -75,6 +75,8 @@ Daylight hours, view quality, and transit proximity are stubs. The sun button on
 
 The site is meant to be published at [https://henrysimon4260.github.io/City-View-Project/](https://henrysimon4260.github.io/City-View-Project/).
 
+The deploy workflow is `Deploy GitHub Pages`.
+
 [`.github/workflows/pages.yml`](.github/workflows/pages.yml) runs on pushes to `main`. It installs dependencies, runs the tests, builds with Vite, and deploys the `dist` folder with GitHub’s Pages actions. In the repository settings, set **Pages → Build and deployment → Source** to **GitHub Actions** once. After that, a push to `main` updates the site.
 
 The workflow reads `secrets.CESIUM_ION_TOKEN` if you add one. Leave the secret unset to publish the USGS-and-footprints map.
