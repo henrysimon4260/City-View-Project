@@ -1,6 +1,6 @@
 # Data
 
-The map is a static site. It does not call listing sites or the city APIs in the browser. Numbers on screen come from `src/data/benchmarks.json`, which `scripts/compile-data.mjs` builds from the archived responses in `data/cache/`.
+The map is a static site. It does not call listing sites or the city APIs in the browser. Numbers on screen come from `public/data/benchmarks.json`, which `scripts/compile-data.mjs` builds from the archived responses in `data/cache/` and which `src/data/source.ts` fetches at runtime. The study-area download is stored once, as `data/cache/study-area.geojson`. The browser file is generated from that cache.
 
 ## Status words
 

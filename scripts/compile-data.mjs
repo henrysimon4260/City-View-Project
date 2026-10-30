@@ -6,6 +6,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { writeStudyFootprints } from "./write-study-footprints.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const cache = resolve(root, "data/cache");
@@ -662,41 +663,10 @@ const dataset = {
   buildings,
 };
 
-const outDir = resolve(root, "src/data");
-mkdirSync(outDir, { recursive: true });
-writeFileSync(resolve(outDir, "benchmarks.json"), `${JSON.stringify(dataset, null, 2)}\n`);
-
-const study = readJson("study-area.geojson");
-const studyFeatures = [];
-for (const feature of study.features ?? []) {
-  const geom = feature.geometry;
-  if (!geom) continue;
-  const polys =
-    geom.type === "MultiPolygon" ? geom.coordinates : geom.type === "Polygon" ? [geom.coordinates] : [];
-  if (polys.length === 0) continue;
-  const coordinates = polys.map((poly) =>
-    poly.map((ring) => ring.map(([lon, lat]) => [round(lon, 6), round(lat, 6)])),
-  );
-  const props = feature.properties ?? {};
-  studyFeatures.push({
-    type: "Feature",
-    properties: {
-      bin: String(props.bin),
-      heightRoofFt: asNumber(props.height_roof),
-      groundElevationFt: asNumber(props.ground_elevation),
-      constructionYear: integerField(props.construction_year),
-      featureCode: integerField(props.feature_code),
-      bbl: props.mappluto_bbl ? String(props.mappluto_bbl) : null,
-    },
-    geometry: { type: "MultiPolygon", coordinates },
-  });
-}
 const publicDir = resolve(root, "public/data");
 mkdirSync(publicDir, { recursive: true });
-writeFileSync(
-  resolve(publicDir, "study-area-footprints.json"),
-  JSON.stringify({ type: "FeatureCollection", features: studyFeatures }),
-);
+writeFileSync(resolve(publicDir, "benchmarks.json"), `${JSON.stringify(dataset, null, 2)}\n`);
+const studyCount = writeStudyFootprints();
 
 function chip(point) {
   if (point.value == null || point.value === "") return `— (${point.status})`;
@@ -823,5 +793,5 @@ lines.push("");
 writeFileSync(resolve(root, "docs/VERIFICATION.md"), `${lines.join("\n")}\n`);
 
 console.log(
-  `Wrote ${buildings.length} buildings, ${studyFeatures.length} context footprints, ${buildings.reduce((n, b) => n + b.unitLines.length, 0)} unit lines.`,
+  `Wrote ${buildings.length} buildings, ${studyCount} context footprints, ${buildings.reduce((n, b) => n + b.unitLines.length, 0)} unit lines.`,
 );

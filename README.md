@@ -87,4 +87,4 @@ The browser does not call the city APIs. To pull a new copy of the open-data cac
 npm run data
 ```
 
-`npm run compile-data` rebuilds `src/data/benchmarks.json`, `public/data/study-area-footprints.json`, and `docs/VERIFICATION.md` from the cache without downloading anything.
+`npm run compile-data` rebuilds `public/data/benchmarks.json` and `docs/VERIFICATION.md` from the cache. `scripts/write-study-footprints.mjs` rebuilds `public/data/study-area-footprints.json` from `data/cache/study-area.geojson`. The browser fetches both. Dev, test, and build run the footprint writer first.

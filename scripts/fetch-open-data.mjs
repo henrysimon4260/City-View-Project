@@ -3,6 +3,25 @@
  * Rate limit: at least 1.1 seconds between requests.
  * Does not call listing sites. Does not overwrite data/cache/published-claims.json.
  */
+import { enabledListingSources, LISTING_SOURCES } from "./lib/sources.mjs";
+
+const enabled = new Set(enabledListingSources().map((source) => source.id));
+function allow(id) {
+  if (!enabled.has(id)) {
+    throw new Error(`Refusing to fetch ${id}: it is not an enabled source.`);
+  }
+}
+for (const source of LISTING_SOURCES) {
+  if (source.kind === "listing-site" && source.enabled) {
+    throw new Error(`Listing site ${source.id} is enabled, and this script does not call listing sites.`);
+  }
+}
+allow("pluto");
+allow("footprints");
+allow("dob-now-co");
+allow("dob-legacy-co");
+allow("pad-geosearch");
+
 const UA = "CityViewProject/0.1 (public-data research; +https://github.com/henrysimon4260/City-View-Project)";
 const CACHE = new URL("../data/cache/", import.meta.url);
 

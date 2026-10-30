@@ -185,7 +185,7 @@ def write_massing() -> dict:
 
 
 def load_benchmarks() -> list[tuple[str, float, float]]:
-    data = json.loads((ROOT / "src/data/benchmarks.json").read_text())
+    data = json.loads((ROOT / "public/data/benchmarks.json").read_text())
     return [(b["id"], b["centroid"][0], b["centroid"][1]) for b in data["buildings"]]
 
 

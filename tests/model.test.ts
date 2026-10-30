@@ -3,16 +3,16 @@ import { describe, expect, it } from "vitest";
 import { queryDaylight } from "../src/analysis/daylight";
 import { queryTransit } from "../src/analysis/transit";
 import { queryViewQuality } from "../src/analysis/viewQuality";
-import { getDataset } from "../src/data/dataset";
+import { assertDataset } from "../src/data/source";
 import { activateUnit, galleryListenerCount, onUnitActivated } from "../src/gallery/hook";
-import { LISTING_SOURCES } from "../src/listings/sources";
+import { LISTING_SOURCES } from "../scripts/lib/sources.mjs";
 import { CITY_HALL, containsLonLat } from "../src/model/bounds";
 import { assertUnitLines, floorLevels, graphicsForFloor } from "../src/model/floors";
 import { horizonDipDegrees, initialBearingDegrees, smallestAngleDegrees } from "../src/model/sightline";
 import type { UnitLine } from "../src/model/types";
 import { exteriorApproach, floorVantage, pointInRing } from "../src/model/viewpoint";
 
-const dataset = getDataset();
+const dataset = assertDataset(JSON.parse(readFileSync("public/data/benchmarks.json", "utf8")));
 const pluto = JSON.parse(readFileSync("data/cache/pluto.json", "utf8")) as Array<Record<string, string>>;
 
 const expected = {

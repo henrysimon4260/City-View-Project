@@ -1,14 +1,11 @@
 import { queryDaylight } from "../analysis/daylight";
 import { queryTransit } from "../analysis/transit";
 import { queryViewQuality } from "../analysis/viewQuality";
-import { getDataset } from "../data/dataset";
 import { floorLevels } from "../model/floors";
-import type { BuildingRecord, DataPoint } from "../model/types";
+import type { BuildingRecord, CityDataset, DataPoint } from "../model/types";
 import type { UiActions, UiModel } from "./state";
 
-const dataset = getDataset();
-
-export function renderPanel(root: HTMLElement, model: UiModel, actions: UiActions): void {
+export function renderPanel(root: HTMLElement, model: UiModel, actions: UiActions, dataset: CityDataset): void {
   const selection = model.selection;
   const building =
     selection.kind === "building" || selection.kind === "floor" || selection.kind === "view"
@@ -18,7 +15,7 @@ export function renderPanel(root: HTMLElement, model: UiModel, actions: UiAction
   root.innerHTML = `
     ${model.imageryNote ? `<p class="note">${esc(model.imageryNote)}</p>` : ""}
     ${model.tilesNote ? `<p class="note">${esc(model.tilesNote)}</p>` : ""}
-    ${building ? buildingView(building, model) : selection.kind === "context" ? contextView(selection) : browseView()}
+    ${building ? buildingView(building, model) : selection.kind === "context" ? contextView(selection) : browseView(dataset)}
     ${stubs(building, selection.kind === "floor" || selection.kind === "view" ? selection.floor : null)}
     ${sunControls(model)}
     <details class="sources">
@@ -48,10 +45,10 @@ export function renderPanel(root: HTMLElement, model: UiModel, actions: UiAction
   root.querySelector("[data-action='shadows']")?.addEventListener("click", () => actions.toggleShadows());
 
   const live = document.querySelector("#live");
-  if (live) live.textContent = liveText(model);
+  if (live) live.textContent = liveText(model, dataset);
 }
 
-function browseView(): string {
+function browseView(dataset: CityDataset): string {
   return `
     <p class="kicker">Five buildings with archived city records</p>
     <h2>Choose a building</h2>
@@ -185,7 +182,7 @@ function sunControls(model: UiModel): string {
   `;
 }
 
-function liveText(model: UiModel): string {
+function liveText(model: UiModel, dataset: CityDataset): string {
   const selection = model.selection;
   if (selection.kind === "browse") return "No building selected.";
   if (selection.kind === "context") return `Footprint ${selection.bin} selected.`;
