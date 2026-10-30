@@ -1,0 +1,51 @@
+[
+  {
+    "buildingId": "130-william",
+    "publisher": "Adjaye Associates",
+    "url": "https://www.adjaye.com/work/130-william-2/",
+    "retrieved": "2026-10-30",
+    "access": "Project page retrieved once. robots.txt allows User-agent: * with Crawl-delay: 10. Floor plans were not requested.",
+    "claims": [
+      {
+        "field": "stories",
+        "value": "66",
+        "quote": "Rising 800 feet, the 66-story luxury condominium"
+      },
+      {
+        "field": "heightFeet",
+        "value": "800",
+        "quote": "Rising 800 feet, the 66-story luxury condominium"
+      },
+      {
+        "field": "residences",
+        "value": "242",
+        "quote": "130 William’s program includes 242 residences"
+      },
+      {
+        "field": "areaFt2",
+        "value": "450000",
+        "quote": "Area 41,500 m² / 450,000 ft²"
+      }
+    ]
+  },
+  {
+    "buildingId": "1-wall",
+    "publisher": "SLCE Architects",
+    "url": "https://www.slcearch.com/project/one-wall-street/",
+    "retrieved": "2026-10-30",
+    "access": "Project page retrieved once. robots.txt allows User-agent: * with Crawl-delay: 20. Floor plans were not requested.",
+    "claims": [
+      {
+        "field": "stories",
+        "value": "51",
+        "quote": "Scale 51 Stories, 566 Units"
+      },
+      {
+        "field": "units",
+        "value": "566",
+        "quote": "Scale 51 Stories, 566 Units"
+      }
+    ],
+    "note": "The same page still said Status In-Progress on 2026-10-30. DOB NOW certificates for this BIN were already issued; that page status is not used."
+  }
+]
