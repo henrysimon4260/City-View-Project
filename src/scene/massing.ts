@@ -7,6 +7,7 @@ import {
   MeshStandardMaterial,
   Vector3,
 } from "three";
+import { fetchJson } from "../data/source";
 import { FEET_TO_METERS } from "../model/floors";
 import { LOWER_MANHATTAN, inLowerManhattan } from "../model/bounds";
 import type { BuildingRecord } from "../model/types";
@@ -55,16 +56,24 @@ export interface CityMeshes {
   faceBins: string[];
 }
 
-export async function buildCity(records: BuildingRecord[]): Promise<CityMeshes> {
-  const response = await fetch(`${import.meta.env.BASE_URL}data/study-area-footprints.json`);
-  if (!response.ok) throw new Error(`Could not load footprints (${response.status}).`);
-  const collection = (await response.json()) as { features: StudyFeature[] };
-  const massing = await loadMassing();
+export async function buildCity(records: BuildingRecord[]): Promise<CityMeshes & { warnings: string[] }> {
+  const warnings: string[] = [];
+  let features: StudyFeature[] = [];
+  try {
+    const collection = (await fetchJson(
+      `${import.meta.env.BASE_URL}data/study-area-footprints.json`,
+      "district footprints",
+    )) as { features: StudyFeature[] };
+    features = collection.features ?? [];
+  } catch (error) {
+    warnings.push(error instanceof Error ? error.message : "Could not load district footprints.");
+  }
+  const massing = await loadMassing(warnings);
   const benchmarkBins = new Set(records.map((record) => record.bin));
   const city: Bucket = { positions: [], colors: [], indices: [], faceBins: [] };
   const context = new Map<string, ContextRecord>();
 
-  for (const feature of collection.features) {
+  for (const feature of features) {
     const bin = feature.properties.bin;
     if (benchmarkBins.has(bin)) continue;
     const rings = outerRings(feature);
@@ -130,14 +139,21 @@ export async function buildCity(records: BuildingRecord[]): Promise<CityMeshes> 
     land: buildLand(),
     context,
     faceBins: city.faceBins,
+    warnings,
   };
 }
 
-async function loadMassing(): Promise<Record<string, { surfaces: MassingSurface[] }>> {
-  const response = await fetch(`${import.meta.env.BASE_URL}data/benchmark-massing.json`);
-  if (!response.ok) return {};
-  const payload = (await response.json()) as { buildings?: Record<string, { surfaces: MassingSurface[] }> };
-  return payload.buildings ?? {};
+async function loadMassing(warnings: string[]): Promise<Record<string, { surfaces: MassingSurface[] }>> {
+  try {
+    const payload = (await fetchJson(
+      `${import.meta.env.BASE_URL}data/benchmark-massing.json`,
+      "benchmark mesh",
+    )) as { buildings?: Record<string, { surfaces: MassingSurface[] }> };
+    return payload.buildings ?? {};
+  } catch (error) {
+    warnings.push(error instanceof Error ? error.message : "Could not load the benchmark mesh.");
+    return {};
+  }
 }
 
 function outerRings(feature: StudyFeature): [number, number][][] {
@@ -254,6 +270,11 @@ function pushVertex(bucket: Bucket, point: Vector3, color: Color): void {
 
 function bucketGeometry(bucket: Bucket): BufferGeometry {
   const geometry = new BufferGeometry();
+  if (bucket.positions.length === 0) {
+    geometry.setAttribute("position", new Float32BufferAttribute([0, 0, 0], 3));
+    geometry.setIndex([]);
+    return geometry;
+  }
   geometry.setAttribute("position", new Float32BufferAttribute(bucket.positions, 3));
   geometry.setAttribute("color", new Float32BufferAttribute(bucket.colors, 3));
   geometry.setIndex(bucket.indices);

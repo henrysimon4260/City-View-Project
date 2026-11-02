@@ -69,6 +69,16 @@ import { detectQuality, type QualitySettings } from "./quality";
 import { createRibbon, setRibbon } from "./ribbon";
 import { HarborWater } from "./water";
 
+function chainFirstFrame(previous: (() => void) | undefined, next: () => void): () => void {
+  let ran = false;
+  return () => {
+    if (ran) return;
+    ran = true;
+    previous?.();
+    next();
+  };
+}
+
 const MAP_FOV = 52;
 const DEG = 180 / Math.PI;
 const RAD = Math.PI / 180;
@@ -196,6 +206,9 @@ export async function mountScene(
   scene.add(city.land);
   scene.add(city.city);
   for (const mesh of city.benchmarks.values()) scene.add(mesh);
+  if (city.warnings.length > 0) {
+    options.onStatus?.(city.warnings.join(" "));
+  }
 
   const water = new HarborWater(renderer, quality.reflections, quality.reflectionScale);
   water.setSun(sunDirection);
@@ -278,7 +291,9 @@ export async function mountScene(
   const emit = () => {
     if (started) options.onChange(model());
   };
-  void mountTiles();
+  options.onFirstFrame = chainFirstFrame(options.onFirstFrame, () => {
+    void mountTiles();
+  });
 
   function resize(): void {
     const width = Math.max(1, container.clientWidth);
@@ -339,8 +354,11 @@ export async function mountScene(
         if (info.tile != null) return;
         reportTileFailure(info.error ?? new Error("Google returned 404 for the 3D tileset."));
       });
-      scene.add(rendererTiles.group);
       tiles = rendererTiles;
+      rendererTiles.addEventListener("load-root-tileset", () => {
+        if (!scene.children.includes(rendererTiles.group)) scene.add(rendererTiles.group);
+        paintCredits(rendererTiles);
+      });
       paintCredits(rendererTiles);
     } catch (error) {
       reportTileFailure(error);
@@ -358,8 +376,15 @@ export async function mountScene(
     const raw = error instanceof Error ? error.message : String(error);
     const detail = /404/.test(raw)
       ? "Google returned 404 for the 3D tileset."
-      : "Photorealistic tiles did not load.";
+      : /failed to fetch/i.test(raw)
+        ? "The browser could not reach Google’s 3D tiles."
+        : "Photorealistic tiles did not load.";
     publishStatus(`${detail} The open-data model is showing.`);
+    if (tiles) {
+      scene.remove(tiles.group);
+      tiles = null;
+    }
+    tileFaults = 3;
     restoreMassing();
   }
 
