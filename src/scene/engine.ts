@@ -195,7 +195,7 @@ export async function mountScene(
   scene.add(city.city);
   for (const mesh of city.benchmarks.values()) scene.add(mesh);
 
-  const water = new HarborWater(renderer, quality.waterSegments, quality.reflections, quality.reflectionScale);
+  const water = new HarborWater(renderer, quality.reflections, quality.reflectionScale);
   water.setSun(sunDirection);
   scene.add(water.mesh);
 

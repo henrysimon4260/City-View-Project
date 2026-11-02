@@ -81,7 +81,6 @@ export class HarborWater {
 
   constructor(
     private readonly renderer: WebGLRenderer,
-    segments: number,
     reflections: boolean,
     scale: number,
   ) {

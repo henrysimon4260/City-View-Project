@@ -10,7 +10,6 @@ export interface QualitySettings {
   reflections: boolean;
   reflectionScale: number;
   bloom: boolean;
-  waterSegments: number;
 }
 
 export function detectQuality(): QualitySettings {
@@ -40,7 +39,6 @@ export function settingsFor(tier: QualityTier): QualitySettings {
       reflections: true,
       reflectionScale: 0.55,
       bloom: true,
-      waterSegments: 180,
     };
   }
   if (tier === "low") {
@@ -54,7 +52,6 @@ export function settingsFor(tier: QualityTier): QualitySettings {
       reflections: false,
       reflectionScale: 0,
       bloom: true,
-      waterSegments: 64,
     };
   }
   return {
@@ -67,6 +64,5 @@ export function settingsFor(tier: QualityTier): QualitySettings {
     reflections: true,
     reflectionScale: 0.4,
     bloom: true,
-    waterSegments: 110,
   };
 }
