@@ -6,7 +6,8 @@ import { queryViewQuality } from "../src/analysis/viewQuality";
 import { assertDataset } from "../src/data/source";
 import { activateUnit, galleryListenerCount, onUnitActivated } from "../src/gallery/hook";
 import { LISTING_SOURCES } from "../scripts/lib/sources.mjs";
-import { CITY_HALL, containsLonLat } from "../src/model/bounds";
+import { CITY_HALL, containsLonLat, inLowerManhattan } from "../src/model/bounds";
+import { solarPosition } from "../src/analysis/daylight";
 import { assertUnitLines, floorLevels, graphicsForFloor } from "../src/model/floors";
 import { horizonDipDegrees, initialBearingDegrees, smallestAngleDegrees } from "../src/model/sightline";
 import type { UnitLine } from "../src/model/types";
@@ -168,6 +169,28 @@ describe("viewpoint", () => {
 
   it("keeps City Hall inside the camera limit", () => {
     expect(containsLonLat(CITY_HALL.longitude, CITY_HALL.latitude)).toBe(true);
+  });
+
+  it("clips the map to Manhattan south of Chambers, including the Battery", () => {
+    expect(inLowerManhattan(CITY_HALL.longitude, CITY_HALL.latitude)).toBe(true);
+    expect(inLowerManhattan(-74.0166, 40.70055)).toBe(true);
+    for (const building of dataset.buildings) {
+      expect(inLowerManhattan(building.centroid[0], building.centroid[1]), building.id).toBe(true);
+    }
+    expect(inLowerManhattan(-73.9955, 40.702)).toBe(false);
+    expect(inLowerManhattan(-74.007, 40.718)).toBe(false);
+    expect(inLowerManhattan(-73.9969, 40.7061)).toBe(false);
+  });
+
+  it("puts the summer sun high over lower Manhattan at local noon", () => {
+    const summer = solarPosition(new Date("2026-06-21T16:00:00Z"), 40.71, -74.01);
+    expect(summer.elevationDegrees).toBeGreaterThan(60);
+    expect(summer.elevationDegrees).toBeLessThan(80);
+    expect(summer.azimuthDegrees).toBeGreaterThan(140);
+    expect(summer.azimuthDegrees).toBeLessThan(220);
+    const november = solarPosition(new Date("2026-11-02T17:12:00Z"), 40.71, -74.01);
+    expect(november.elevationDegrees).toBeGreaterThan(25);
+    expect(november.elevationDegrees).toBeLessThan(50);
   });
 });
 

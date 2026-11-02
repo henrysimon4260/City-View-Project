@@ -1,5 +1,7 @@
 node_modules/
 public/data/study-area-footprints.json
+public/draco/
+public/basis/
 dist/
 .env
 .env.local

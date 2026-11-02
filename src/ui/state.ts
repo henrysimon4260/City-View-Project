@@ -32,4 +32,5 @@ export interface UiActions {
   home: () => void;
   toggleSun: () => void;
   toggleShadows: () => void;
+  previewFloor: (floor: number | null) => void;
 }

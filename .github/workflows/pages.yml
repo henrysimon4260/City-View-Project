@@ -27,9 +27,9 @@ jobs:
       - run: npm test
       - run: npm run build
         env:
-          # Optional. An empty secret is fine: the site uses USGS imagery and NYC footprints.
-          VITE_CESIUM_ION_TOKEN: ${{ secrets.CESIUM_ION_TOKEN }}
+          # Optional. Without it the map uses open-data massing inside the same district.
           VITE_GOOGLE_MAPS_KEY: ${{ secrets.GOOGLE_MAPS_KEY }}
+          BASE_PATH: /City-View-Project/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

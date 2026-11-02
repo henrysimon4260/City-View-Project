@@ -1,11 +1,17 @@
 import { defineConfig } from "vite";
-import cesium from "vite-plugin-cesium";
+
+function basePath(): string {
+  const raw = process.env.BASE_PATH ?? "/City-View-Project/";
+  if (raw === "" || raw === "/") return "/";
+  const withLead = raw.startsWith("/") ? raw : `/${raw}`;
+  return withLead.endsWith("/") ? withLead : `${withLead}/`;
+}
 
 export default defineConfig({
-  base: "/City-View-Project/",
-  plugins: [cesium()],
+  base: basePath(),
   build: {
     sourcemap: false,
+    target: "es2022",
   },
   server: {
     port: 5173,

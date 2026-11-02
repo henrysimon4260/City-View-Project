@@ -1,7 +1,5 @@
-import { mountScene, type CityViewApi } from "./cesium/scene";
-import { createViewer } from "./cesium/viewer";
+import { mountScene, type CityViewApi } from "./scene/engine";
 import { staticSource } from "./data/source";
-import { activateUnit } from "./gallery/hook";
 import { renderPanel } from "./ui/panel";
 import type { UiActions } from "./ui/state";
 import "./styles.css";
@@ -10,17 +8,19 @@ const app = document.querySelector("#app");
 if (!app) throw new Error("Missing #app");
 
 app.innerHTML = `
+  <div id="cesium"></div>
   <header id="topbar">
     <div class="brand">
-      <p class="mark">City View Project</p>
-      <p class="tagline">Explore individual rental and condo units in a 3D downtown Manhattan map, with daylight and views factored in.</p>
+      <p class="mark">City View</p>
+      <p class="tagline">Lower Manhattan, south of Chambers Street.</p>
     </div>
-    <button type="button" id="home">Reset view</button>
+    <button type="button" id="home">Reset</button>
   </header>
-  <div id="cesium"></div>
   <aside id="panel"></aside>
+  <button type="button" id="compass" aria-label="Face north"><span id="needle"></span></button>
+  <p id="credits"></p>
   <p id="live" class="sr-only" aria-live="polite"></p>
-  <p id="boot" class="boot">Loading downtown Manhattan footprints…</p>
+  <p id="boot">City View</p>
 `;
 
 const bridge: { api: CityViewApi | null } = { api: null };
@@ -34,36 +34,35 @@ const actions: UiActions = {
   home: () => void bridge.api?.home(),
   toggleSun: () => bridge.api?.toggleSun(),
   toggleShadows: () => bridge.api?.toggleShadows(),
+  previewFloor: (floor) => bridge.api?.previewFloor(floor),
 };
 
 const panel = document.querySelector("#panel");
 const boot = document.querySelector("#boot");
-if (!panel || !boot) throw new Error("Missing panel");
+if (!(panel instanceof HTMLElement) || !(boot instanceof HTMLElement)) throw new Error("Missing panel");
 
-void bootApp(panel, boot as HTMLElement);
+void bootApp(panel, boot);
 
-async function bootApp(panelEl: Element, bootEl: HTMLElement): Promise<void> {
+async function bootApp(panelEl: HTMLElement, bootEl: HTMLElement): Promise<void> {
   try {
     const host = document.querySelector("#cesium");
     if (!(host instanceof HTMLElement)) throw new Error("Missing map container");
     const dataset = await staticSource().load();
-    const { viewer, imageryNote } = await createViewer(host);
-    const api = await mountScene(viewer, {
+    const api = await mountScene(host, {
       dataset,
-      imageryNote,
-      onUnitActivate: activateUnit,
-      onChange: (next) => renderPanel(panelEl as HTMLElement, next, actions, dataset),
+      onChange: (next) => renderPanel(panelEl, next, actions, dataset),
     });
     bridge.api = api;
     document.querySelector("#home")?.addEventListener("click", () => void api.home());
+    document.querySelector("#compass")?.addEventListener("click", () => api.faceNorth());
     window.addEventListener("keydown", (event) => {
       if (event.key === "Escape") void api.back();
     });
-    if (new URLSearchParams(location.search).has("debug")) {
-      window.__cityView = api;
-    }
+    if (new URLSearchParams(location.search).has("debug")) window.__cityView = api;
     await api.start();
-    bootEl.remove();
+    await api.settle();
+    bootEl.classList.add("is-done");
+    window.setTimeout(() => bootEl.remove(), 720);
   } catch (error) {
     bootEl.textContent = error instanceof Error ? error.message : "The map failed to start.";
   }
