@@ -8,6 +8,7 @@ import { activateUnit, galleryListenerCount, onUnitActivated } from "../src/gall
 import { LISTING_SOURCES } from "../scripts/lib/sources.mjs";
 import { CITY_HALL, containsLonLat, inLowerManhattan } from "../src/model/bounds";
 import { solarPosition } from "../src/analysis/daylight";
+import { applyFloorArchive } from "../src/data/floorArchive";
 import { assertUnitLines, floorLevels, graphicsForFloor } from "../src/model/floors";
 import { horizonDipDegrees, initialBearingDegrees, smallestAngleDegrees } from "../src/model/sightline";
 import type { UnitLine } from "../src/model/types";
@@ -118,6 +119,32 @@ describe("floors and plates", () => {
     expect(smallestAngleDegrees(350, 10)).toBeCloseTo(20, 5);
     expect(horizonDipDegrees(200)).toBeGreaterThan(0.4);
     expect(horizonDipDegrees(200)).toBeLessThan(0.5);
+  });
+
+  it("applies only sourced floor elevations from the archive", () => {
+    const building = dataset.buildings[0];
+    const untouched = applyFloorArchive(building, {
+      bin: building.bin,
+      buildingId: building.id,
+      floors: [{ number: 3, baseFt: 20, topFt: 30, status: "unverified", sources: ["x"], method: null, uncertaintyMeters: null }],
+    });
+    expect(untouched.floors[2]?.baseFt).toBeNull();
+    const measured = applyFloorArchive(building, {
+      bin: building.bin,
+      buildingId: building.id,
+      floors: [{
+        number: 3,
+        baseFt: 20,
+        topFt: 30,
+        status: "estimated",
+        sources: ["facade-photo"],
+        method: "window row",
+        uncertaintyMeters: 0.6,
+      }],
+    });
+    expect(measured.floors[2]?.baseFt).toBe(20);
+    expect(measured.floors[2]?.elevationStatus).toBe("estimated");
+    expect(floorLevels(measured)[2]?.topMeters).not.toBeNull();
   });
 
   it("refuses an unverified ring and accepts a sourced line range", () => {

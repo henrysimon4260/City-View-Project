@@ -1,0 +1,466 @@
+{
+  "bin": "1087954",
+  "buildingId": "15-william",
+  "name": "15 William Street",
+  "stories": 44,
+  "heightRoofFt": 528.04837283,
+  "groundElevationFt": 11,
+  "datum": "Feet above the city ground elevation, the same frame as benchmarks.json. Null means not measured.",
+  "floors": [
+    {
+      "number": 1,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 2,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 3,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 4,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 5,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 6,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 7,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 8,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 9,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 10,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 11,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 12,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 13,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 14,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 15,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 16,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 17,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 18,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 19,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 20,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 21,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 22,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 23,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 24,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 25,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 26,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 27,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 28,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 29,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 30,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 31,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 32,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 33,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 34,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 35,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 36,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 37,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 38,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 39,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 40,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 41,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 42,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 43,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 44,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    }
+  ],
+  "measurement": {
+    "status": "rejected",
+    "detectedRows": 40,
+    "method": "Vertical-gradient projection on a center strip of a street-level photograph. The camera looks steeply up, the podium hides the base, and the facade was not rectified.",
+    "reason": "The pass found 40 horizontal peaks. PLUTO records 44 stories. The count does not match, and foreshortening is too strong to scale a sill to the city roof height. No elevation was stored.",
+    "sources": [
+      {
+        "title": "15 William Street.jpg",
+        "publisher": "Wikimedia Commons",
+        "url": "https://commons.wikimedia.org/wiki/File:15_William_Street.jpg",
+        "license": "See the file page",
+        "retrieved": "2026-11-02"
+      }
+    ]
+  }
+}

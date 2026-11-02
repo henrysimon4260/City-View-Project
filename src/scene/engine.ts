@@ -57,6 +57,7 @@ import {
   smallestAngleDegrees,
   verticalFovDegrees,
 } from "../model/sightline";
+import { applyFloorArchive, loadFloorArchives } from "../data/floorArchive";
 import type { BuildingRecord, CityDataset } from "../model/types";
 import { ellipsoidHeight } from "../model/vertical";
 import { exteriorApproach, floorVantage, parapetVantage } from "../model/viewpoint";
@@ -129,6 +130,10 @@ export async function mountScene(
     onStatus?: (message: string | null) => void;
   },
 ): Promise<CityViewApi> {
+  const floorArchives = await loadFloorArchives(options.dataset.buildings);
+  for (const building of options.dataset.buildings) {
+    building.floors = applyFloorArchive(building, floorArchives.get(building.bin) ?? null).floors;
+  }
   const quality = detectQuality();
   const reduceMotion =
     window.matchMedia("(prefers-reduced-motion: reduce)").matches ||

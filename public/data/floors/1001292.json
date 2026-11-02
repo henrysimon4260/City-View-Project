@@ -1,0 +1,88 @@
+{
+  "bin": "1001292",
+  "buildingId": "220-water",
+  "name": "220 Water Street",
+  "stories": 7,
+  "heightRoofFt": 104,
+  "groundElevationFt": 10,
+  "datum": "Feet above the city ground elevation, the same frame as benchmarks.json. Null means not measured.",
+  "floors": [
+    {
+      "number": 1,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 2,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 3,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 4,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 5,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 6,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    },
+    {
+      "number": 7,
+      "baseFt": null,
+      "topFt": null,
+      "status": "unverified",
+      "sources": [],
+      "method": null,
+      "uncertaintyMeters": null,
+      "note": "Not measured. A window-row elevation is stored only after the detected row count matches the city story count and the stack fits the city roof height."
+    }
+  ],
+  "measurement": {
+    "status": "not-measured",
+    "detectedRows": null,
+    "method": "No rectified, freely licensed facade was measured for this building in this pass.",
+    "reason": "Street-level photographs that show the whole facade, an elevation drawing, and a DOB floor-to-floor schedule were not both available. Roof height was not divided into equal stories.",
+    "sources": []
+  }
+}

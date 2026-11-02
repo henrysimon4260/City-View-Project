@@ -11,7 +11,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "pretest": "node scripts/write-study-footprints.mjs",
-    "test": "vitest run",
+    "test": "node scripts/check-floors.mjs && vitest run",
+    "check-floors": "node scripts/check-floors.mjs",
     "compile-data": "node scripts/compile-data.mjs",
     "data": "node scripts/fetch-open-data.mjs && node scripts/compile-data.mjs",
     "feasibility": "node scripts/feasibility.mjs"
