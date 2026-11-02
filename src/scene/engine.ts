@@ -115,6 +115,8 @@ export async function mountScene(
   options: {
     dataset: CityDataset;
     onChange: (model: UiModel) => void;
+    onFirstFrame?: () => void;
+    onStatus?: (message: string | null) => void;
   },
 ): Promise<CityViewApi> {
   const quality = detectQuality();
@@ -230,18 +232,35 @@ export async function mountScene(
   controls.snap(homeRig, "home");
 
   let last = performance.now();
+  let sawFrame = false;
+  let tileFaults = 0;
   const loop = (now: number) => {
     requestAnimationFrame(loop);
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
-    controls.update(dt);
-    if (tiles) {
-      tiles.setResolutionFromRenderer(camera, renderer);
-      tiles.update();
+    try {
+      controls.update(dt);
+      if (tiles && tileFaults < 3) {
+        try {
+          tiles.setResolutionFromRenderer(camera, renderer);
+          tiles.update();
+          maybeRevealTiles();
+        } catch (error) {
+          tileFaults += 1;
+          reportTileFailure(error);
+        }
+      }
+      water.update(dt, camera, scene, quality.reflections);
+      composer.render(dt);
+    } catch (error) {
+      console.error(error);
+      reportTileFailure(error);
     }
-    water.update(dt, camera, scene, quality.reflections);
-    composer.render(dt);
     frameCount += 1;
+    if (!sawFrame) {
+      sawFrame = true;
+      options.onFirstFrame?.();
+    }
     placeMarkers();
     if (needle) needle.style.transform = `rotate(${(-controls.current.heading * DEG).toFixed(2)}deg)`;
     if (!degraded && frameCount === 180 && quality.tier === "high") void maybeDegrade();
@@ -280,16 +299,14 @@ export async function mountScene(
   async function mountTiles(): Promise<void> {
     const key = import.meta.env.VITE_GOOGLE_MAPS_KEY;
     if (!key) {
-      tilesNote =
-        "Photorealistic tiles are off.";
+      publishStatus("Photorealistic tiles are off. The open-data model is showing.");
       paintCredits(null);
-      emit();
       return;
     }
     try {
       const rendererTiles = new TilesRenderer();
       rendererTiles.registerPlugin(
-        new GoogleCloudAuthPlugin({ apiToken: key, autoRefreshToken: true, useRecommendedSettings: false }),
+        new GoogleCloudAuthPlugin({ apiToken: key, autoRefreshToken: false, useRecommendedSettings: false }),
       );
       rendererTiles.registerPlugin(
         new ReorientationPlugin({
@@ -316,38 +333,63 @@ export async function mountScene(
         const loaded = (event as { scene?: Object3D }).scene;
         if (!loaded) return;
         patchClipObject(loaded);
-        revealTiles();
       });
       rendererTiles.addEventListener("load-error", (event) => {
-        if ((event as { tile?: unknown }).tile != null) return;
-        tilesNote = "Google Photorealistic 3D Tiles did not load. Open-data massing stays on for Manhattan south of Chambers Street.";
-        emit();
+        const info = event as { tile?: unknown; error?: unknown };
+        if (info.tile != null) return;
+        reportTileFailure(info.error ?? new Error("Google returned 404 for the 3D tileset."));
       });
       scene.add(rendererTiles.group);
       tiles = rendererTiles;
-      tilesNote = "Google Photorealistic 3D Tiles. © Google.";
       paintCredits(rendererTiles);
-      emit();
     } catch (error) {
-      const message = error instanceof Error ? error.message : "The tileset did not start.";
-      tilesNote = `Photorealistic tiles did not start (${message}). Open-data massing stays on.`;
-      emit();
+      reportTileFailure(error);
     }
   }
 
-  function revealTiles(): void {
+  function publishStatus(message: string | null): void {
+    options.onStatus?.(message);
+    if (tilesNote === message) return;
+    tilesNote = message;
+    emit();
+  }
+
+  function reportTileFailure(error: unknown): void {
+    const raw = error instanceof Error ? error.message : String(error);
+    const detail = /404/.test(raw)
+      ? "Google returned 404 for the 3D tileset."
+      : "Photorealistic tiles did not load.";
+    publishStatus(`${detail} The open-data model is showing.`);
+    restoreMassing();
+  }
+
+  function restoreMassing(): void {
+    city.land.visible = true;
+    city.city.visible = nearVisible;
+    const cityMaterial = city.city.material as MeshStandardMaterial;
+    cityMaterial.colorWrite = true;
+    cityMaterial.depthWrite = true;
+    for (const mesh of city.benchmarks.values()) {
+      const material = mesh.material as MeshStandardMaterial;
+      material.colorWrite = true;
+      material.depthWrite = true;
+    }
+  }
+
+  let photoreal = false;
+  function maybeRevealTiles(): void {
+    if (photoreal || !tiles || tiles.visibleTiles.size === 0) return;
+    photoreal = true;
     city.land.visible = false;
     const cityMaterial = city.city.material as MeshStandardMaterial;
     cityMaterial.colorWrite = false;
     cityMaterial.depthWrite = false;
-    city.city.visible = nearVisible;
     for (const mesh of city.benchmarks.values()) {
       const material = mesh.material as MeshStandardMaterial;
       material.colorWrite = false;
       material.depthWrite = false;
     }
-    tilesNote = "Google Photorealistic 3D Tiles, clipped to Manhattan south of Chambers Street. © Google.";
-    emit();
+    publishStatus(null);
   }
 
   function paintCredits(rendererTiles: TilesRenderer | null): void {

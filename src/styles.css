@@ -92,7 +92,7 @@ button:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.9); outline-offs
 
 #topbar > * { pointer-events: auto; }
 
-.mark, .tagline, #home, #panel h2, #panel p, #panel button, #panel summary {
+.mark, .tagline, .status-line, #home, #panel h2, #panel p, #panel button, #panel summary {
   text-shadow: var(--shadow);
 }
 
@@ -103,12 +103,17 @@ button:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.9); outline-offs
   letter-spacing: -0.03em;
 }
 
-.tagline {
+.tagline, .status-line {
   margin: 0.15em 0 0;
-  max-width: 28ch;
+  max-width: 36ch;
   color: var(--muted);
   font-size: clamp(12px, 0.72rem + 0.15vw, 14px);
   line-height: 1.35;
+}
+
+.status-line {
+  margin-top: 0.75rem;
+  color: var(--ink);
 }
 
 #home, .text-button, .floor-actions button, .toggles button {
@@ -130,7 +135,7 @@ button:focus-visible { outline: 2px solid rgba(255, 255, 255, 0.9); outline-offs
 #home:active, .building:active, .floors button:active { transform: translateY(0) scale(0.98); }
 
 #panel {
-  top: clamp(72px, 10vh, 108px);
+  top: var(--chrome-top, 132px);
   left: clamp(14px, 2vw, 28px);
   width: min(280px, calc(100vw - 28px));
   max-height: calc(100% - 120px);

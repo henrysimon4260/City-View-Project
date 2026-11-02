@@ -13,7 +13,7 @@ export function renderPanel(root: HTMLElement, model: UiModel, actions: UiAction
     ? buildingView(building, model)
     : selection.kind === "context"
       ? contextView(selection)
-      : browseView(dataset, model.tilesNote);
+      : browseView(dataset);
 
   root.querySelectorAll<HTMLButtonElement>("[data-building-id]").forEach((button) => {
     button.addEventListener("click", () => actions.selectBuilding(button.dataset.buildingId ?? ""));
@@ -40,14 +40,13 @@ export function renderPanel(root: HTMLElement, model: UiModel, actions: UiAction
   if (live) live.textContent = liveText(model, dataset);
 }
 
-function browseView(dataset: CityDataset, tilesNote: string | null): string {
+function browseView(dataset: CityDataset): string {
   return `
     <p class="kicker">South of Chambers</p>
     <p class="lede">Five buildings with a city record. Floor heights appear only when a window row was measured.</p>
     <div class="building-list">
       ${dataset.buildings.map((building) => buildingButton(building)).join("")}
     </div>
-    ${tilesNote ? `<p class="fine">${esc(tilesNote)}</p>` : ""}
   `;
 }
 

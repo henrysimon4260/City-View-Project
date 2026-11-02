@@ -13,6 +13,7 @@ app.innerHTML = `
     <div class="brand">
       <p class="mark">City View</p>
       <p class="tagline">Lower Manhattan, south of Chambers Street.</p>
+      <p id="status" class="status-line" hidden></p>
     </div>
     <button type="button" id="home">Reset</button>
   </header>
@@ -51,6 +52,8 @@ async function bootApp(panelEl: HTMLElement, bootEl: HTMLElement): Promise<void>
     const api = await mountScene(host, {
       dataset,
       onChange: (next) => renderPanel(panelEl, next, actions, dataset),
+      onFirstFrame: () => dismissBoot(bootEl),
+      onStatus: (message) => showStatus(message),
     });
     bridge.api = api;
     document.querySelector("#home")?.addEventListener("click", () => void api.home());
@@ -59,13 +62,32 @@ async function bootApp(panelEl: HTMLElement, bootEl: HTMLElement): Promise<void>
       if (event.key === "Escape") void api.back();
     });
     if (new URLSearchParams(location.search).has("debug")) window.__cityView = api;
+    window.setTimeout(() => dismissBoot(bootEl), 2500);
+    window.addEventListener("resize", () => {
+      const status = document.querySelector("#status");
+      if (status instanceof HTMLElement && !status.hidden) showStatus(status.textContent);
+    });
     await api.start();
-    await api.settle();
-    bootEl.classList.add("is-done");
-    window.setTimeout(() => bootEl.remove(), 720);
   } catch (error) {
-    bootEl.textContent = error instanceof Error ? error.message : "The map failed to start.";
+    dismissBoot(bootEl);
+    showStatus(error instanceof Error ? error.message : "The map failed to start.");
   }
+}
+
+function dismissBoot(bootEl: HTMLElement): void {
+  if (!bootEl.isConnected || bootEl.classList.contains("is-done")) return;
+  bootEl.classList.add("is-done");
+  window.setTimeout(() => bootEl.remove(), 280);
+}
+
+function showStatus(message: string | null): void {
+  const status = document.querySelector("#status");
+  if (!(status instanceof HTMLElement)) return;
+  status.textContent = message ?? "";
+  status.hidden = !message;
+  const brand = document.querySelector(".brand");
+  const top = brand instanceof HTMLElement ? brand.getBoundingClientRect().bottom + 18 : 132;
+  document.documentElement.style.setProperty("--chrome-top", `${Math.ceil(top)}px`);
 }
 
 declare global {

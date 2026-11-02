@@ -39,10 +39,19 @@ export function setSlice(ring: [number, number][] | null, heightY: number | null
   clipUniforms.uSliceOn.value = 1;
 }
 
+function unrolledInside(name: string, count: number): string {
+  const tests: string[] = [];
+  for (let i = 0; i < count; i += 1) {
+    const previous = (i + count - 1) % count;
+    tests.push(`if (clipCross(p, ${name}[${i}], ${name}[${previous}])) inside = !inside;`);
+  }
+  return tests.join("\n  ");
+}
+
 const CLIP_PARS = /* glsl */ `
 varying vec3 vClipWorld;
-uniform vec2 uPoly[32];
-uniform vec2 uSlice[24];
+uniform vec2 uPoly[${POLY}];
+uniform vec2 uSlice[${SLICE}];
 uniform float uSliceOn;
 uniform float uSliceY;
 bool clipCross(vec2 p, vec2 a, vec2 b) {
@@ -53,20 +62,12 @@ bool clipCross(vec2 p, vec2 a, vec2 b) {
 }
 bool clipDistrict(vec2 p) {
   bool inside = false;
-  for (int i = 0; i < 32; i++) {
-    int j = i - 1;
-    if (j < 0) j = 31;
-    if (clipCross(p, uPoly[i], uPoly[j])) inside = !inside;
-  }
+  ${unrolledInside("uPoly", POLY)}
   return inside;
 }
 bool clipSlice(vec2 p) {
   bool inside = false;
-  for (int i = 0; i < 24; i++) {
-    int j = i - 1;
-    if (j < 0) j = 23;
-    if (clipCross(p, uSlice[i], uSlice[j])) inside = !inside;
-  }
+  ${unrolledInside("uSlice", SLICE)}
   return inside;
 }
 `;
